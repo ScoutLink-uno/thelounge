@@ -20,6 +20,8 @@ export default {
 		user: Object,
 		active: Boolean,
 		onHover: Function,
+		channel: Object,
+		network: Object,
 	},
 	computed: {
 		nickColor() {
@@ -34,6 +36,8 @@ export default {
 			eventbus.emit("contextmenu:user", {
 				event: event,
 				user: this.user,
+				network: this.network,
+				channel: this.channel,
 			});
 		},
 	},
