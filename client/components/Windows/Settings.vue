@@ -17,6 +17,21 @@
 				</label>
 			</div>
 
+			<h2>IRCManager</h2>
+			<div>
+				<label class="opt">
+					<a
+						href="https://ircmanager.twoopy.nl"
+						class="btn"
+						target="_blank"
+						:checked="$store.state.settings.media"
+						type="button"
+						name="IRCManager"
+						>Open IRCManager</a
+					>
+				</label>
+			</div>
+
 			<div v-if="canRegisterProtocol || hasInstallPromptEvent">
 				<h2>Native app</h2>
 				<button
