@@ -66,9 +66,29 @@ export function generateChannelContextMenu($root, channel, network) {
 						text: "/ignorelist",
 					}),
 			},
+			{
+				label: "IRC - Connect to Network",
+				type: "item",
+				class: "connect",
+				action: () =>
+					socket.emit("input", {
+						target: channel.id,
+						text: "/znc connect",
+					}),
+			},
+			{
+				label: "IRC - Connect to Network",
+				type: "item",
+				class: "disconnect",
+				action: () =>
+					socket.emit("input", {
+						target: channel.id,
+						text: "/znc connect",
+					}),
+			},
 			network.status.connected
 				? {
-						label: "Disconnect",
+						label: "Webchat - Disconnect",
 						type: "item",
 						class: "disconnect",
 						action: () =>
@@ -78,7 +98,7 @@ export function generateChannelContextMenu($root, channel, network) {
 							}),
 				  }
 				: {
-						label: "Connect",
+						label: "Webchat - Connect",
 						type: "item",
 						class: "connect",
 						action: () =>
@@ -158,14 +178,16 @@ export function generateChannelContextMenu($root, channel, network) {
 	}
 
 	// Add close menu item
-	items.push({
-		label: closeMap[channel.type],
-		type: "item",
-		class: "close",
-		action() {
-			$root.closeChannel(channel);
-		},
-	});
+	if (channel.type !== "lobby") {
+		items.push({
+			label: closeMap[channel.type],
+			type: "item",
+			class: "close",
+			action() {
+				$root.closeChannel(channel);
+			},
+		});
+	}
 
 	return items;
 }
