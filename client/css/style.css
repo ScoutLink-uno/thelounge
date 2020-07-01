@@ -2946,3 +2946,7 @@ form.message-search input::placeholder {
 	justify-content: center;
 	align-items: center;
 }
+
+
+#footer .connect {display: none;}
+#footer .active {display: block;}
