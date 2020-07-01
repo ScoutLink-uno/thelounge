@@ -2845,3 +2845,7 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 	justify-content: center;
 	align-items: center;
 }
+
+
+#footer .connect {display: none;}
+#footer .active {display: block;}
