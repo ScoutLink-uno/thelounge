@@ -12,14 +12,14 @@
 				<template v-else>
 					Connect
 					<template v-if="config.lockNetwork && $store.state.serverConfiguration.public">
-						to {{ defaults.name }}
+						to {{ defaults.name }}client/css/style.css
 					</template>
 				</template>
 			</h1>
 			<template v-if="!config.lockNetwork">
 				<h2>Network settings</h2>
 				<div class="connect-row">
-					<label for="connect:name">Name</label>
+					<label for="connect:name">Network Name</label>
 					<input
 						id="connect:name"
 						v-model="defaults.name"
@@ -144,60 +144,83 @@
 					@input="onNickChanged"
 				/>
 			</div>
-			<template v-if="!config.useHexIp">
+			<template v-if="config.lockNetwork">
+				<h2>Network settings</h2>
 				<div class="connect-row">
-					<label for="connect:username">Username</label>
+					<label for="connect:name">Network Name</label>
 					<input
-						id="connect:username"
-						ref="usernameInput"
-						v-model="defaults.username"
-						class="input username"
-						name="username"
+						id="connect:name"
+						v-model="defaults.name"
+						class="input"
+						name="name"
 						maxlength="100"
 					/>
 				</div>
-			</template>
-			<div class="connect-row">
-				<label for="connect:realname">Real name</label>
-				<input
-					id="connect:realname"
-					v-model="defaults.realname"
-					class="input"
-					name="realname"
-					maxlength="300"
-				/>
-			</div>
-			<template v-if="defaults.uuid && !$store.state.serverConfiguration.public">
 				<div class="connect-row">
-					<label for="connect:commands">
-						Commands
-						<span
-							class="tooltipped tooltipped-ne tooltipped-no-delay"
-							aria-label="One /command per line.
-Each command will be executed in
-the server tab on new connection"
-						>
-							<button class="extra-help" />
-						</span>
-					</label>
-					<textarea
-						id="connect:commands"
-						ref="commandsInput"
-						:value="defaults.commands ? defaults.commands.join('\n') : ''"
-						class="input"
-						name="commands"
-						@input="resizeCommandsInput"
-					/>
+					<label for="connect:password">Credentials</label>
+					<RevealPassword
+						v-slot:default="slotProps"
+						class="input-wrap password-container"
+					>
+						<input
+							id="connect:password"
+							v-model="defaults.password"
+							class="input"
+							:type="slotProps.isVisible ? 'text' : 'password'"
+							placeholder="username/network:password"
+							name="password"
+							maxlength="300"
+						/>
+						<small>
+							This field should contain "username/network:password"<br />
+							Username = Your ircmanager.twoopy.nl username.<br />
+							Network = The network that you want to connect to.<br />
+							Password = Your ircmanager.twoopy.nl password.<br />
+							<br />
+							The Network name is often, "Scoutlink" or "Twoopy".<br />
+							<br />
+							When using other clients, put the data above in the "Server password"
+							field of your other client.
+						</small>
+					</RevealPassword>
 				</div>
 			</template>
-			<template v-else-if="!defaults.uuid">
+			<template v-if="!config.lockNetwork">
+				<h2>User preferences</h2>
 				<div class="connect-row">
-					<label for="connect:channels">Channels</label>
+					<label for="connect:nick">Nick</label>
 					<input
-						id="connect:channels"
-						v-model="defaults.join"
+						id="connect:nick"
+						v-model="defaults.nick"
+						class="input nick"
+						name="nick"
+						pattern="[^\s:!@]+"
+						maxlength="100"
+						required
+						@input="onNickChanged"
+					/>
+				</div>
+				<template v-if="!config.useHexIp">
+					<div class="connect-row">
+						<label for="connect:username">Username</label>
+						<input
+							id="connect:username"
+							ref="usernameInput"
+							v-model="defaults.username"
+							class="input username"
+							name="username"
+							maxlength="100"
+						/>
+					</div>
+				</template>
+				<div class="connect-row">
+					<label for="connect:realname">Real name</label>
+					<input
+						id="connect:realname"
+						v-model="defaults.realname"
 						class="input"
-						name="join"
+						name="realname"
+						maxlength="300"
 					/>
 				</div>
 			</template>
@@ -232,85 +255,6 @@ the server tab on new connection"
 						</RevealPassword>
 					</div>
 				</template>
-			</template>
-			<template v-else>
-				<h2 id="label-auth">Authentication</h2>
-				<div class="connect-row connect-auth" role="group" aria-labelledby="label-auth">
-					<label class="opt">
-						<input
-							:checked="!defaults.sasl"
-							type="radio"
-							name="sasl"
-							value=""
-							@change="setSaslAuth('')"
-						/>
-						No authentication
-					</label>
-					<label class="opt">
-						<input
-							:checked="defaults.sasl === 'plain'"
-							type="radio"
-							name="sasl"
-							value="plain"
-							@change="setSaslAuth('plain')"
-						/>
-						Username + password (SASL PLAIN)
-					</label>
-					<label
-						v-if="!$store.state.serverConfiguration.public && defaults.tls"
-						class="opt"
-					>
-						<input
-							:checked="defaults.sasl === 'external'"
-							type="radio"
-							name="sasl"
-							value="external"
-							@change="setSaslAuth('external')"
-						/>
-						Client certificate (SASL EXTERNAL)
-					</label>
-				</div>
-
-				<template v-if="defaults.sasl === 'plain'">
-					<div class="connect-row">
-						<label for="connect:username">Account</label>
-						<input
-							id="connect:saslAccount"
-							v-model="defaults.saslAccount"
-							class="input"
-							name="saslAccount"
-							maxlength="100"
-							required
-						/>
-					</div>
-					<div class="connect-row">
-						<label for="connect:password">Password</label>
-						<RevealPassword
-							v-slot:default="slotProps"
-							class="input-wrap password-container"
-						>
-							<input
-								id="connect:saslPassword"
-								v-model="defaults.saslPassword"
-								class="input"
-								:type="slotProps.isVisible ? 'text' : 'password'"
-								name="saslPassword"
-								maxlength="300"
-								required
-							/>
-						</RevealPassword>
-					</div>
-				</template>
-				<div v-else-if="defaults.sasl === 'external'" class="connect-sasl-external">
-					<p>
-						The Lounge automatically generates and manages the client certificate.
-					</p>
-					<p>
-						On the IRC server, you will need to tell the services to attach the
-						certificate fingerprint (certfp) to your account, for example:
-					</p>
-					<pre><code>/msg NickServ CERT ADD</code></pre>
-				</div>
 			</template>
 
 			<div>
