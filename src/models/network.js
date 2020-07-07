@@ -100,38 +100,6 @@ Network.prototype.validate = function (client) {
 		ClientCertificate.remove(this.uuid);
 	}
 
-	if (Helper.config.lockNetwork) {
-		// This check is needed to prevent invalid user configurations
-		if (
-			!Helper.config.public &&
-			this.host &&
-			this.host.length > 0 &&
-			this.host !== Helper.config.defaults.host
-		) {
-			this.channels[0].pushMessage(
-				client,
-				new Msg({
-					type: Msg.Type.ERROR,
-					text: "Hostname you specified is not allowed.",
-				}),
-				true
-			);
-
-			return false;
-		}
-
-		if (Helper.config.public) {
-			this.name = Helper.config.defaults.name;
-			// Sync lobby channel name
-			this.channels[0].name = Helper.config.defaults.name;
-		}
-
-		this.host = Helper.config.defaults.host;
-		this.port = Helper.config.defaults.port;
-		this.tls = Helper.config.defaults.tls;
-		this.rejectUnauthorized = Helper.config.defaults.rejectUnauthorized;
-	}
-
 	if (this.host.length === 0) {
 		this.channels[0].pushMessage(
 			client,
