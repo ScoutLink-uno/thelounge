@@ -77,7 +77,7 @@ export function generateChannelContextMenu($root, channel, network) {
 					}),
 			},
 			{
-				label: "IRC - Connect to Network",
+				label: "IRC - Disconnect from Network",
 				type: "item",
 				class: "disconnect",
 				action: () =>
