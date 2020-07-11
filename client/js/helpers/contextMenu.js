@@ -83,7 +83,7 @@ export function generateChannelContextMenu($root, channel, network) {
 				action: () =>
 					socket.emit("input", {
 						target: channel.id,
-						text: "/znc connect",
+						text: "/znc disconnect",
 					}),
 			},
 			network.status.connected
