@@ -8,7 +8,7 @@ const Msg = require("../../src/models/msg");
 const Helper = require("../../src/helper");
 const MessageStorage = require("../../src/plugins/messageStorage/sqlite.js");
 
-describe("SQLite Message Storage", function() {
+describe("SQLite Message Storage", function () {
 	// Increase timeout due to unpredictable I/O on CI services
 	this.timeout(util.isRunningOnCI() ? 25000 : 5000);
 	this.slow(300);
@@ -16,13 +16,13 @@ describe("SQLite Message Storage", function() {
 	const expectedPath = path.join(Helper.getHomePath(), "logs", "testUser.sqlite3");
 	let store;
 
-	// Delete database file from previous test run
-	before(function(done) {
+	before(function (done) {
 		store = new MessageStorage({
 			name: "testUser",
 			idMsg: 1,
 		});
 
+		// Delete database file from previous test run
 		if (fs.existsSync(expectedPath)) {
 			fs.unlink(expectedPath, done);
 		} else {
@@ -30,14 +30,21 @@ describe("SQLite Message Storage", function() {
 		}
 	});
 
-	it("should resolve an empty array when disabled", function(done) {
+	after(function (done) {
+		// After tests run, remove the logs folder
+		// so we return to the clean state
+		fs.unlinkSync(expectedPath);
+		fs.rmdir(path.join(Helper.getHomePath(), "logs"), done);
+	});
+
+	it("should resolve an empty array when disabled", function (done) {
 		store.getMessages(null, null).then((messages) => {
 			expect(messages).to.be.empty;
 			done();
 		});
 	});
 
-	it("should create database file", function() {
+	it("should create database file", function () {
 		expect(store.isEnabled).to.be.false;
 		expect(fs.existsSync(expectedPath)).to.be.false;
 
@@ -46,7 +53,7 @@ describe("SQLite Message Storage", function() {
 		expect(store.isEnabled).to.be.true;
 	});
 
-	it("should create tables", function(done) {
+	it("should create tables", function (done) {
 		store.database.serialize(() =>
 			store.database.all(
 				"SELECT name, tbl_name, sql FROM sqlite_master WHERE type = 'table'",
@@ -73,7 +80,7 @@ describe("SQLite Message Storage", function() {
 		);
 	});
 
-	it("should insert schema version to options table", function(done) {
+	it("should insert schema version to options table", function (done) {
 		store.database.serialize(() =>
 			store.database.get(
 				"SELECT value FROM options WHERE name = 'schema_version'",
@@ -90,7 +97,7 @@ describe("SQLite Message Storage", function() {
 		);
 	});
 
-	it("should store a message", function(done) {
+	it("should store a message", function (done) {
 		store.database.serialize(() => {
 			store.index(
 				{
@@ -109,7 +116,7 @@ describe("SQLite Message Storage", function() {
 		});
 	});
 
-	it("should retrieve previously stored message", function(done) {
+	it("should retrieve previously stored message", function (done) {
 		store.database.serialize(() =>
 			store
 				.getMessages(
@@ -134,7 +141,7 @@ describe("SQLite Message Storage", function() {
 		);
 	});
 
-	it("should close database", function(done) {
+	it("should close database", function (done) {
 		store.close((err) => {
 			expect(err).to.be.null;
 			expect(fs.existsSync(expectedPath)).to.be.true;

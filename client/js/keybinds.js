@@ -5,9 +5,14 @@ import Mousetrap from "mousetrap";
 import store from "./store";
 import {switchToChannel} from "./router";
 import isChannelCollapsed from "./helpers/isChannelCollapsed";
+import isIgnoredKeybind from "./helpers/isIgnoredKeybind";
 
 // Switch to the next/previous window in the channel list.
-Mousetrap.bind(["alt+up", "alt+down"], function(e, keys) {
+Mousetrap.bind(["alt+up", "alt+down"], function (e, keys) {
+	if (isIgnoredKeybind(e)) {
+		return true;
+	}
+
 	if (store.state.networks.length === 0) {
 		return false;
 	}
@@ -44,7 +49,11 @@ Mousetrap.bind(["alt+up", "alt+down"], function(e, keys) {
 });
 
 // Switch to the next/previous lobby in the channel list
-Mousetrap.bind(["alt+shift+up", "alt+shift+down"], function(e, keys) {
+Mousetrap.bind(["alt+shift+up", "alt+shift+down"], function (e, keys) {
+	if (isIgnoredKeybind(e)) {
+		return true;
+	}
+
 	const length = store.state.networks.length;
 
 	if (length === 0) {
@@ -71,12 +80,8 @@ Mousetrap.bind(["alt+shift+up", "alt+shift+down"], function(e, keys) {
 
 // Jump to the first window with a highlight in it, or the first with unread
 // activity if there are none with highlights.
-Mousetrap.bind(["alt+a"], function(e) {
-	// Do not handle this keybind in the chat input because
-	// it can be used to type letters with umlauts
-	// Normally this is not required, but since chat input has the "mousetrap"
-	// class for other keybinds to work, we need to add this check
-	if (e.target.tagName === "TEXTAREA") {
+Mousetrap.bind(["alt+a"], function (e) {
+	if (isIgnoredKeybind(e)) {
 		return true;
 	}
 

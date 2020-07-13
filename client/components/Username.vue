@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import eventbus from "../js/eventbus";
 import colorClass from "../js/helpers/colorClass";
 
 export default {
@@ -19,6 +20,8 @@ export default {
 		user: Object,
 		active: Boolean,
 		onHover: Function,
+		channel: Object,
+		network: Object,
 	},
 	computed: {
 		nickColor() {
@@ -30,9 +33,11 @@ export default {
 			return this.onHover(this.user);
 		},
 		openContextMenu(event) {
-			this.$root.$emit("contextmenu:user", {
+			eventbus.emit("contextmenu:user", {
 				event: event,
 				user: this.user,
+				network: this.network,
+				channel: this.channel,
 			});
 		},
 	},

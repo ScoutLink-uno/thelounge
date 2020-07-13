@@ -29,7 +29,9 @@
 					:key="message.id + '-unread'"
 					class="unread-marker"
 				>
-					<span class="unread-marker-text" />
+					<span class="tooltipped tooltipped-n" aria-label="Dismiss">
+						<span class="unread-marker-text" @click="clearUnreadMarker" />
+					</span>
 				</div>
 
 				<MessageCondensed
@@ -55,14 +57,15 @@
 </template>
 
 <script>
-require("intersection-observer");
-
 const constants = require("../js/constants");
+import eventbus from "../js/eventbus";
 import clipboard from "../js/clipboard";
 import socket from "../js/socket";
 import Message from "./Message.vue";
 import MessageCondensed from "./MessageCondensed.vue";
 import DateMarker from "./DateMarker.vue";
+
+let unreadMarkerShown = false;
 
 export default {
 	name: "MessageList",
@@ -175,7 +178,7 @@ export default {
 	mounted() {
 		this.$refs.chat.addEventListener("scroll", this.handleScroll, {passive: true});
 
-		this.$root.$on("resize", this.handleResize);
+		eventbus.on("resize", this.handleResize);
 
 		this.$nextTick(() => {
 			if (this.historyObserver) {
@@ -184,10 +187,10 @@ export default {
 		});
 	},
 	beforeUpdate() {
-		this.unreadMarkerShown = false;
+		unreadMarkerShown = false;
 	},
 	beforeDestroy() {
-		this.$root.$off("resize", this.handleResize);
+		eventbus.off("resize", this.handleResize);
 		this.$refs.chat.removeEventListener("scroll", this.handleScroll);
 	},
 	destroyed() {
@@ -206,8 +209,8 @@ export default {
 			return new Date(previousMessage.time).getDay() !== new Date(message.time).getDay();
 		},
 		shouldDisplayUnreadMarker(id) {
-			if (!this.unreadMarkerShown && id > this.channel.firstUnread) {
-				this.unreadMarkerShown = true;
+			if (!unreadMarkerShown && id > this.channel.firstUnread) {
+				unreadMarkerShown = true;
 				return true;
 			}
 
@@ -332,6 +335,9 @@ export default {
 
 			const el = this.$refs.chat;
 			el.scrollTop = el.scrollHeight;
+		},
+		clearUnreadMarker() {
+			this.channel.firstUnread = this.channel.messages[this.channel.messages.length - 1].id;
 		},
 	},
 };

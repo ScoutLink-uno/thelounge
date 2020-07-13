@@ -1,6 +1,7 @@
 "use strict";
 
 import socket from "../socket";
+import eventbus from "../eventbus";
 
 export function generateChannelContextMenu($root, channel, network) {
 	const typeMap = {
@@ -65,9 +66,29 @@ export function generateChannelContextMenu($root, channel, network) {
 						text: "/ignorelist",
 					}),
 			},
+			{
+				label: "IRC - Connect to Network",
+				type: "item",
+				class: "connect",
+				action: () =>
+					socket.emit("input", {
+						target: channel.id,
+						text: "/znc connect",
+					}),
+			},
+			{
+				label: "IRC - Disconnect from Network",
+				type: "item",
+				class: "disconnect",
+				action: () =>
+					socket.emit("input", {
+						target: channel.id,
+						text: "/znc disconnect",
+					}),
+			},
 			network.status.connected
 				? {
-						label: "Disconnect",
+						label: "Webchat - Disconnect",
 						type: "item",
 						class: "disconnect",
 						action: () =>
@@ -77,7 +98,7 @@ export function generateChannelContextMenu($root, channel, network) {
 							}),
 				  }
 				: {
-						label: "Connect",
+						label: "Webchat - Connect",
 						type: "item",
 						class: "connect",
 						action: () =>
@@ -135,7 +156,7 @@ export function generateChannelContextMenu($root, channel, network) {
 			type: "item",
 			class: "clear-history",
 			action() {
-				$root.$emit(
+				eventbus.emit(
 					"confirm-dialog",
 					{
 						title: "Clear history",
@@ -157,23 +178,27 @@ export function generateChannelContextMenu($root, channel, network) {
 	}
 
 	// Add close menu item
-	items.push({
-		label: closeMap[channel.type],
-		type: "item",
-		class: "close",
-		action() {
-			$root.closeChannel(channel);
-		},
-	});
+	if (channel.type !== "lobby") {
+		items.push({
+			label: closeMap[channel.type],
+			type: "item",
+			class: "close",
+			action() {
+				$root.closeChannel(channel);
+			},
+		});
+	}
 
 	return items;
 }
 
 export function generateUserContextMenu($root, channel, network, user) {
-	const currentChannelUser = channel.users.find((u) => u.nick === network.nick) || {};
+	const currentChannelUser = channel
+		? channel.users.find((u) => u.nick === network.nick) || {}
+		: {};
 
 	const whois = () => {
-		const chan = $root.$store.getters.findChannelOnCurrentNetwork(user.nick);
+		const chan = network.channels.find((c) => c.name === user.nick);
 
 		if (chan) {
 			$root.switchToChannel(chan);

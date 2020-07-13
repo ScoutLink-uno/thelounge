@@ -2,7 +2,7 @@
 
 const log = require("../../log");
 const path = require("path");
-const fsextra = require("fs-extra");
+const fs = require("fs");
 const Helper = require("../../helper");
 const Msg = require("../../models/msg");
 
@@ -39,7 +39,7 @@ class MessageStorage {
 		const sqlitePath = path.join(logsPath, `${this.client.name}.sqlite3`);
 
 		try {
-			fsextra.ensureDirSync(logsPath);
+			fs.mkdirSync(logsPath, {recursive: true});
 		} catch (e) {
 			log.error("Unable to create logs directory", e);
 
@@ -183,22 +183,71 @@ class MessageStorage {
 						}
 
 						resolve(
-							rows
-								.map((row) => {
-									const msg = JSON.parse(row.msg);
-									msg.time = row.time;
-									msg.type = row.type;
+							rows.reverse().map((row) => {
+								const msg = JSON.parse(row.msg);
+								msg.time = row.time;
+								msg.type = row.type;
 
-									const newMsg = new Msg(msg);
-									newMsg.id = this.client.idMsg++;
+								const newMsg = new Msg(msg);
+								newMsg.id = this.client.idMsg++;
 
-									return newMsg;
-								})
-								.reverse()
+								return newMsg;
+							})
 						);
 					}
 				)
 			);
+		});
+	}
+
+	search(query) {
+		if (!this.isEnabled) {
+			return Promise.resolve([]);
+		}
+
+		let select =
+			'SELECT msg, type, time, network, channel FROM messages WHERE type = "message" AND (json_extract(msg, "$.text") LIKE ?';
+		const params = [`%${query.searchTerm}%`];
+
+		if (query.searchNicks) {
+			select += ' OR json_extract(msg, "$.from.nick") LIKE ?)';
+			params.push(query.searchTerm);
+		} else {
+			select += ")";
+		}
+
+		if (query.networkUuid) {
+			select += " AND network = ? ";
+			params.push(query.networkUuid);
+		}
+
+		if (query.channelName) {
+			select += " AND channel = ? ";
+			params.push(query.channelName.toLowerCase());
+		}
+
+		const maxResults = 100;
+
+		select += " ORDER BY time DESC LIMIT ? OFFSET ? ";
+		params.push(maxResults);
+		query.offset = parseInt(query.offset, 10) || 0;
+		params.push(query.offset);
+
+		return new Promise((resolve, reject) => {
+			this.database.all(select, params, (err, rows) => {
+				if (err) {
+					reject(err);
+				} else {
+					const response = {
+						searchTerm: query.searchTerm,
+						target: query.channelName,
+						networkUuid: query.networkUuid,
+						offset: query.offset,
+						results: parseSearchRowsToMessages(query.offset, rows),
+					};
+					resolve(response);
+				}
+			});
 		});
 	}
 
@@ -208,3 +257,20 @@ class MessageStorage {
 }
 
 module.exports = MessageStorage;
+
+function parseSearchRowsToMessages(id, rows) {
+	const messages = [];
+
+	for (const row of rows) {
+		const msg = JSON.parse(row.msg);
+		msg.time = row.time;
+		msg.type = row.type;
+		msg.networkUuid = row.network;
+		msg.channelName = row.channel;
+		msg.id = id;
+		messages.push(new Msg(msg));
+		id += 1;
+	}
+
+	return messages;
+}

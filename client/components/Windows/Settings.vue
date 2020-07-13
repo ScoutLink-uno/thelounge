@@ -17,6 +17,21 @@
 				</label>
 			</div>
 
+			<h2>IRCManager</h2>
+			<div>
+				<label class="opt">
+					<a
+						href="https://ircmanager.twoopy.nl"
+						class="btn"
+						target="_blank"
+						:checked="$store.state.settings.media"
+						type="button"
+						name="IRCManager"
+						>Open IRCManager</a
+					>
+				</label>
+			</div>
+
 			<div v-if="canRegisterProtocol || hasInstallPromptEvent">
 				<h2>Native app</h2>
 				<button
@@ -229,6 +244,29 @@
 				</div>
 			</template>
 
+			<div
+				v-if="$store.state.settings.advanced && $store.state.serverConfiguration.fileUpload"
+			>
+				<h2>File uploads</h2>
+				<div>
+					<label class="opt">
+						<input
+							:checked="$store.state.settings.uploadCanvas"
+							type="checkbox"
+							name="uploadCanvas"
+						/>
+						Attempt to remove metadata from images before uploading
+						<span
+							class="tooltipped tooltipped-n tooltipped-no-delay"
+							aria-label="This option renders the image into a canvas element to remove metadata from the image.
+This may break orientation if your browser does not support that."
+						>
+							<button class="extra-help" />
+						</span>
+					</label>
+				</div>
+			</div>
+
 			<template v-if="!$store.state.serverConfiguration.public">
 				<h2>Push Notifications</h2>
 				<div>
@@ -238,7 +276,7 @@
 						class="btn"
 						:disabled="
 							$store.state.pushNotificationState !== 'supported' &&
-								$store.state.pushNotificationState !== 'subscribed'
+							$store.state.pushNotificationState !== 'subscribed'
 						"
 						@click="onPushButtonClick"
 					>
@@ -345,7 +383,7 @@
 			<div
 				v-if="
 					!$store.state.serverConfiguration.public &&
-						!$store.state.serverConfiguration.ldapEnabled
+					!$store.state.serverConfiguration.ldapEnabled
 				"
 				id="change-password"
 				role="group"
@@ -431,18 +469,24 @@
 				<h2>Sessions</h2>
 
 				<h3>Current session</h3>
-				<Session
-					v-if="$store.getters.currentSession"
-					:session="$store.getters.currentSession"
-				/>
+				<Session v-if="currentSession" :session="currentSession" />
+
+				<template v-if="activeSessions.length > 0">
+					<h3>Active sessions</h3>
+					<Session
+						v-for="session in activeSessions"
+						:key="session.token"
+						:session="session"
+					/>
+				</template>
 
 				<h3>Other sessions</h3>
 				<p v-if="$store.state.sessions.length === 0">Loading…</p>
-				<p v-else-if="$store.getters.otherSessions.length === 0">
+				<p v-else-if="otherSessions.length === 0">
 					<em>You are not currently logged in to any other device.</em>
 				</p>
 				<Session
-					v-for="session in $store.getters.otherSessions"
+					v-for="session in otherSessions"
 					v-else
 					:key="session.token"
 					:session="session"
@@ -451,6 +495,12 @@
 		</form>
 	</div>
 </template>
+
+<style>
+textarea#user-specified-css-input {
+	height: 100px;
+}
+</style>
 
 <script>
 import socket from "../../js/socket";
@@ -491,6 +541,15 @@ export default {
 		hasInstallPromptEvent() {
 			// TODO: This doesn't hide the button after clicking
 			return installPromptEvent !== null;
+		},
+		currentSession() {
+			return this.$store.state.sessions.find((item) => item.current);
+		},
+		activeSessions() {
+			return this.$store.state.sessions.filter((item) => !item.current && item.active > 0);
+		},
+		otherSessions() {
+			return this.$store.state.sessions.filter((item) => !item.current && !item.active);
 		},
 	},
 	mounted() {

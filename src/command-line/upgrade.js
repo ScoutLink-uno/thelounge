@@ -8,9 +8,9 @@ const Utils = require("./utils");
 
 program
 	.command("upgrade [packages...]")
-	.description("Upgrade installed themes and packages to their latest versions.")
+	.description("Upgrade installed themes and packages to their latest versions")
 	.on("--help", Utils.extraHelp)
-	.action(function(packages) {
+	.action(function (packages) {
 		const fs = require("fs");
 		const path = require("path");
 

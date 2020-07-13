@@ -111,6 +111,7 @@ import autocompletion from "../js/autocompletion";
 import commands from "../js/commands/index";
 import socket from "../js/socket";
 import upload from "../js/upload";
+import eventbus from "../js/eventbus";
 
 const formattingHotkeys = {
 	"mod+k": "\x03",
@@ -163,7 +164,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.$root.$on("escapekey", this.blurInput);
+		eventbus.on("escapekey", this.blurInput);
 
 		if (this.$store.state.settings.autocomplete) {
 			autocompletionRef = autocompletion(this.$refs.input);
@@ -171,7 +172,7 @@ export default {
 
 		const inputTrap = Mousetrap(this.$refs.input);
 
-		inputTrap.bind(Object.keys(formattingHotkeys), function(e, key) {
+		inputTrap.bind(Object.keys(formattingHotkeys), function (e, key) {
 			const modifier = formattingHotkeys[key];
 
 			wrapCursor(
@@ -183,7 +184,7 @@ export default {
 			return false;
 		});
 
-		inputTrap.bind(Object.keys(bracketWraps), function(e, key) {
+		inputTrap.bind(Object.keys(bracketWraps), function (e, key) {
 			if (e.target.selectionStart !== e.target.selectionEnd) {
 				wrapCursor(e.target, key, bracketWraps[key]);
 
@@ -225,7 +226,7 @@ export default {
 		}
 	},
 	destroyed() {
-		this.$root.$off("escapekey", this.blurInput);
+		eventbus.off("escapekey", this.blurInput);
 
 		if (autocompletionRef) {
 			autocompletionRef.destroy();
@@ -284,11 +285,37 @@ export default {
 				autocompletionRef.hide();
 			}
 
+
 			this.channel.inputHistoryPosition = 0;
 			this.channel.pendingMessage = "";
 			this.$refs.input.value = "";
 			this.setInputSize();
 			this.closeToolbar();
+
+			const resetInput = () => {
+				this.channel.inputHistoryPosition = 0;
+				this.channel.pendingMessage = "";
+				this.$refs.input.value = "";
+				this.setInputSize();
+			};
+
+			if (this.$store.state.serverConfiguration.fileUpload) {
+				const lines = 1 + (text.match(/\n/g) || "").length;
+
+				// TODO: Offer a confirmation to user whether they want to upload
+				if (lines > 3 || text.length > 700) {
+					resetInput();
+
+					const file = new File([text], "paste.txt", {
+						type: "text/plain",
+					});
+					upload.triggerUpload([file]);
+
+					return false;
+				}
+			}
+
+			resetInput();
 
 			// Store new message in history if last message isn't already equal
 			if (this.channel.inputHistory[1] !== text) {

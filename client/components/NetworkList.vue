@@ -82,7 +82,7 @@
 					:is-join-channel-shown="network.isJoinChannelShown"
 					:active="
 						$store.state.activeChannel &&
-							network.channels[0] === $store.state.activeChannel.channel
+						network.channels[0] === $store.state.activeChannel.channel
 					"
 					@toggleJoinChannel="network.isJoinChannelShown = !network.isJoinChannelShown"
 				/>
@@ -106,17 +106,18 @@
 					@start="onDragStart"
 					@end="onDragEnd"
 				>
-					<Channel
-						v-for="(channel, index) in network.channels"
-						v-if="index > 0"
-						:key="channel.id"
-						:channel="channel"
-						:network="network"
-						:active="
-							$store.state.activeChannel &&
+					<template v-for="(channel, index) in network.channels">
+						<Channel
+							v-if="index > 0"
+							:key="channel.id"
+							:channel="channel"
+							:network="network"
+							:active="
+								$store.state.activeChannel &&
 								channel === $store.state.activeChannel.channel
-						"
-					/>
+							"
+						/>
+					</template>
 				</Draggable>
 			</div>
 		</Draggable>
@@ -193,6 +194,7 @@ import JoinChannel from "./JoinChannel.vue";
 
 import socket from "../js/socket";
 import collapseNetwork from "../js/helpers/collapseNetwork";
+import isIgnoredKeybind from "../js/helpers/isIgnoredKeybind";
 
 export default {
 	name: "NetworkList",
@@ -251,15 +253,27 @@ export default {
 		Mousetrap.unbind("alt+j", this.toggleSearch);
 	},
 	methods: {
-		expandNetwork() {
+		expandNetwork(event) {
+			if (isIgnoredKeybind(event)) {
+				return true;
+			}
+
 			if (this.$store.state.activeChannel) {
 				collapseNetwork(this.$store.state.activeChannel.network, false);
 			}
+
+			return false;
 		},
-		collapseNetwork() {
+		collapseNetwork(event) {
+			if (isIgnoredKeybind(event)) {
+				return true;
+			}
+
 			if (this.$store.state.activeChannel) {
 				collapseNetwork(this.$store.state.activeChannel.network, true);
 			}
+
+			return false;
 		},
 		isCurrentlyInTouch(e) {
 			// TODO: Implement a way to sort on touch devices
@@ -299,9 +313,7 @@ export default {
 			});
 		},
 		toggleSearch(event) {
-			// Do not handle this keybind in the chat input because
-			// it can be used to type letters with umlauts
-			if (event.target.tagName === "TEXTAREA") {
+			if (isIgnoredKeybind(event)) {
 				return true;
 			}
 

@@ -7,6 +7,7 @@ const Chan = require("./chan");
 const Msg = require("./msg");
 const Helper = require("../helper");
 const STSPolicies = require("../plugins/sts");
+const ClientCertificate = require("../plugins/clientCertificate");
 
 module.exports = Network;
 
@@ -34,6 +35,9 @@ function Network(attr) {
 		commands: [],
 		username: "",
 		realname: "",
+		sasl: "",
+		saslAccount: "",
+		saslPassword: "",
 		channels: [],
 		irc: null,
 		serverOptions: {
@@ -62,7 +66,7 @@ function Network(attr) {
 	);
 }
 
-Network.prototype.validate = function(client) {
+Network.prototype.validate = function (client) {
 	// Remove !, :, @ and whitespace characters from nicknames and usernames
 	const cleanNick = (str) => str.replace(/[\x00\s:!@]/g, "_").substring(0, 100);
 
@@ -81,9 +85,19 @@ Network.prototype.validate = function(client) {
 	this.password = cleanString(this.password);
 	this.host = cleanString(this.host).toLowerCase();
 	this.name = cleanString(this.name);
+	this.saslAccount = cleanString(this.saslAccount);
+	this.saslPassword = cleanString(this.saslPassword);
 
 	if (!this.port) {
 		this.port = this.tls ? 6697 : 6667;
+	}
+
+	if (!["", "plain", "external"].includes(this.sasl)) {
+		this.sasl = "";
+	}
+
+	if (!this.tls) {
+		ClientCertificate.remove(this.uuid);
 	}
 
 	if (Helper.config.lockNetwork) {
@@ -145,26 +159,19 @@ Network.prototype.validate = function(client) {
 	return true;
 };
 
-Network.prototype.createIrcFramework = function(client) {
+Network.prototype.createIrcFramework = function (client) {
 	this.irc = new IrcFramework.Client({
 		version: false, // We handle it ourselves
-		host: this.host,
-		port: this.port,
-		nick: this.nick,
-		username: Helper.config.useHexIp ? Helper.ip2hex(client.config.browser.ip) : this.username,
-		gecos: this.realname,
-		password: this.password,
-		tls: this.tls,
 		outgoing_addr: Helper.config.bind,
-		rejectUnauthorized: this.rejectUnauthorized,
 		enable_chghost: true,
 		enable_echomessage: true,
 		enable_setname: true,
 		auto_reconnect: true,
 		auto_reconnect_wait: 10000 + Math.floor(Math.random() * 1000), // If multiple users are connected to the same network, randomize their reconnections a little
 		auto_reconnect_max_retries: 360, // At least one hour (plus timeouts) worth of reconnections
-		webirc: this.createWebIrc(client),
 	});
+
+	this.setIrcFrameworkOptions(client);
 
 	this.irc.requestCap([
 		"znc.in/self-message", // Legacy echo-message for ZNC
@@ -177,7 +184,37 @@ Network.prototype.createIrcFramework = function(client) {
 	}
 };
 
-Network.prototype.createWebIrc = function(client) {
+Network.prototype.setIrcFrameworkOptions = function (client) {
+	this.irc.options.host = this.host;
+	this.irc.options.port = this.port;
+	this.irc.options.password = this.password;
+	this.irc.options.nick = this.nick;
+	this.irc.options.username = Helper.config.useHexIp
+		? Helper.ip2hex(client.config.browser.ip)
+		: this.username;
+	this.irc.options.gecos = this.realname;
+	this.irc.options.tls = this.tls;
+	this.irc.options.rejectUnauthorized = this.rejectUnauthorized;
+	this.irc.options.webirc = this.createWebIrc(client);
+
+	this.irc.options.client_certificate = this.tls ? ClientCertificate.get(this.uuid) : null;
+
+	if (!this.sasl) {
+		delete this.irc.options.sasl_mechanism;
+		delete this.irc.options.account;
+	} else if (this.sasl === "external") {
+		this.irc.options.sasl_mechanism = "EXTERNAL";
+		this.irc.options.account = {};
+	} else if (this.sasl === "plain") {
+		delete this.irc.options.sasl_mechanism;
+		this.irc.options.account = {
+			account: this.saslAccount,
+			password: this.saslPassword,
+		};
+	}
+};
+
+Network.prototype.createWebIrc = function (client) {
 	if (
 		!Helper.config.webirc ||
 		!Object.prototype.hasOwnProperty.call(Helper.config.webirc, this.host)
@@ -207,7 +244,7 @@ Network.prototype.createWebIrc = function(client) {
 	return webircObject;
 };
 
-Network.prototype.edit = function(client, args) {
+Network.prototype.edit = function (client, args) {
 	const oldNick = this.nick;
 	const oldRealname = this.realname;
 
@@ -221,6 +258,9 @@ Network.prototype.edit = function(client, args) {
 	this.password = String(args.password || "");
 	this.username = String(args.username || "");
 	this.realname = String(args.realname || "");
+	this.sasl = String(args.sasl || "");
+	this.saslAccount = String(args.saslAccount || "");
+	this.saslPassword = String(args.saslPassword || "");
 
 	// Split commands into an array
 	this.commands = String(args.commands || "")
@@ -243,7 +283,7 @@ Network.prototype.edit = function(client, args) {
 				// Send new nick straight away
 				this.irc.changeNick(this.nick);
 			} else {
-				this.irc.options.nick = this.irc.user.nick = this.nick;
+				this.irc.user.nick = this.nick;
 
 				// Update UI nick straight away if IRC is not connected
 				client.emit("nick", {
@@ -261,26 +301,20 @@ Network.prototype.edit = function(client, args) {
 			this.irc.raw("SETNAME", this.realname);
 		}
 
-		this.irc.options.host = this.host;
-		this.irc.options.port = this.port;
-		this.irc.options.password = this.password;
-		this.irc.options.gecos = this.irc.user.gecos = this.realname;
-		this.irc.options.tls = this.tls;
-		this.irc.options.rejectUnauthorized = this.rejectUnauthorized;
+		this.setIrcFrameworkOptions(client);
 
-		if (!Helper.config.useHexIp) {
-			this.irc.options.username = this.irc.user.username = this.username;
-		}
+		this.irc.user.username = this.irc.options.username;
+		this.irc.user.gecos = this.irc.options.gecos;
 	}
 
 	client.save();
 };
 
-Network.prototype.destroy = function() {
+Network.prototype.destroy = function () {
 	this.channels.forEach((channel) => channel.destroy());
 };
 
-Network.prototype.setNick = function(nick) {
+Network.prototype.setNick = function (nick) {
 	this.nick = nick;
 	this.highlightRegex = new RegExp(
 		// Do not match characters and numbers (unless IRC color)
@@ -297,6 +331,10 @@ Network.prototype.setNick = function(nick) {
 	if (this.keepNick === nick) {
 		this.keepNick = null;
 	}
+
+	if (this.irc) {
+		this.irc.options.nick = nick;
+	}
 };
 
 /**
@@ -308,7 +346,7 @@ Network.prototype.setNick = function(nick) {
  *
  * @see {@link Chan#getFilteredClone}
  */
-Network.prototype.getFilteredClone = function(lastActiveChannel, lastMessage) {
+Network.prototype.getFilteredClone = function (lastActiveChannel, lastMessage) {
 	const filteredNetwork = Object.keys(this).reduce((newNetwork, prop) => {
 		if (prop === "channels") {
 			// Channels objects perform their own cloning
@@ -328,7 +366,7 @@ Network.prototype.getFilteredClone = function(lastActiveChannel, lastMessage) {
 	return filteredNetwork;
 };
 
-Network.prototype.getNetworkStatus = function() {
+Network.prototype.getNetworkStatus = function () {
 	const status = {
 		connected: false,
 		secure: false,
@@ -349,7 +387,7 @@ Network.prototype.getNetworkStatus = function() {
 	return status;
 };
 
-Network.prototype.addChannel = function(newChan) {
+Network.prototype.addChannel = function (newChan) {
 	let index = this.channels.length; // Default to putting as the last item in the array
 
 	// Don't sort special channels in amongst channels/users.
@@ -373,7 +411,7 @@ Network.prototype.addChannel = function(newChan) {
 	return index;
 };
 
-Network.prototype.quit = function(quitMessage) {
+Network.prototype.quit = function (quitMessage) {
 	if (!this.irc) {
 		return;
 	}
@@ -384,27 +422,25 @@ Network.prototype.quit = function(quitMessage) {
 	this.irc.quit(quitMessage || Helper.config.leaveMessage);
 };
 
-Network.prototype.exportForEdit = function() {
-	let fieldsToReturn;
+Network.prototype.exportForEdit = function () {
+	const fieldsToReturn = [
+		"uuid",
+		"name",
+		"nick",
+		"password",
+		"username",
+		"realname",
+		"sasl",
+		"saslAccount",
+		"saslPassword",
+		"commands",
+	];
 
-	if (Helper.config.displayNetwork) {
-		// Return fields required to edit a network
-		fieldsToReturn = [
-			"uuid",
-			"nick",
-			"name",
-			"host",
-			"port",
-			"tls",
-			"rejectUnauthorized",
-			"password",
-			"username",
-			"realname",
-			"commands",
-		];
-	} else {
-		// Same fields as in getClientConfiguration when network is hidden
-		fieldsToReturn = ["name", "nick", "username", "password", "realname"];
+	if (!Helper.config.lockNetwork) {
+		fieldsToReturn.push("host");
+		fieldsToReturn.push("port");
+		fieldsToReturn.push("tls");
+		fieldsToReturn.push("rejectUnauthorized");
 	}
 
 	const data = _.pick(this, fieldsToReturn);
@@ -414,7 +450,7 @@ Network.prototype.exportForEdit = function() {
 	return data;
 };
 
-Network.prototype.export = function() {
+Network.prototype.export = function () {
 	const network = _.pick(this, [
 		"uuid",
 		"awayMessage",
@@ -428,15 +464,18 @@ Network.prototype.export = function() {
 		"password",
 		"username",
 		"realname",
+		"sasl",
+		"saslAccount",
+		"saslPassword",
 		"commands",
 		"ignoreList",
 	]);
 
 	network.channels = this.channels
-		.filter(function(channel) {
+		.filter(function (channel) {
 			return channel.type === Chan.Type.CHANNEL || channel.type === Chan.Type.QUERY;
 		})
-		.map(function(chan) {
+		.map(function (chan) {
 			const keys = ["name"];
 
 			if (chan.type === Chan.Type.CHANNEL) {
@@ -451,10 +490,10 @@ Network.prototype.export = function() {
 	return network;
 };
 
-Network.prototype.getChannel = function(name) {
+Network.prototype.getChannel = function (name) {
 	name = name.toLowerCase();
 
-	return _.find(this.channels, function(that, i) {
+	return _.find(this.channels, function (that, i) {
 		// Skip network lobby (it's always unshifted into first position)
 		return i > 0 && that.name.toLowerCase() === name;
 	});

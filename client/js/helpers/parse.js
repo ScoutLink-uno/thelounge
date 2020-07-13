@@ -85,10 +85,10 @@ function parse(createElement, text, message = undefined, network = undefined) {
 	const emojiParts = findEmoji(cleanText);
 	const nameParts = findNames(cleanText, message ? message.users || [] : []);
 
-	const parts = channelParts
-		.concat(linkParts)
-		.concat(emojiParts)
-		.concat(nameParts);
+	const parts = channelParts.concat(linkParts).concat(emojiParts).concat(nameParts);
+
+	// The channel the message belongs to might not exist if the user isn't joined to it.
+	const messageChannel = message ? message.channel : null;
 
 	// Merge the styling information with the channels / URLs / nicks / text objects and
 	// generate HTML strings with the resulting fragments
@@ -187,6 +187,8 @@ function parse(createElement, text, message = undefined, network = undefined) {
 						user: {
 							nick: textPart.nick,
 						},
+						channel: messageChannel,
+						network,
 					},
 					attrs: {
 						dir: "auto",

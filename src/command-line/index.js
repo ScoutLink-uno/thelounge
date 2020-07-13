@@ -2,7 +2,6 @@
 
 const log = require("../log");
 const fs = require("fs");
-const fsextra = require("fs-extra");
 const path = require("path");
 const colors = require("chalk");
 const program = require("commander");
@@ -16,12 +15,6 @@ program
 		"override entries of the configuration file, must be specified for each entry that needs to be overriden",
 		Utils.parseConfigOptions
 	)
-	.on("command:*", () => {
-		log.error(
-			`Unknown command. See ${colors.bold("--help")} for a list of available commands.`
-		);
-		process.exit(1);
-	})
 	.on("--help", Utils.extraHelp);
 
 // Parse options from `argv` returning `argv` void of these options.
@@ -58,20 +51,16 @@ require("./outdated");
 // a version of `argv` that does not contain options already parsed by
 // `parseOptions` above.
 // This is done by giving it the updated `argv` that `parseOptions` returned,
-// except it returns an object with `args`/`unknown`, so we need to concat them.
+// except it returns an object with `operands`/`unknown`, so we need to concat them.
 // See https://github.com/tj/commander.js/blob/fefda77f463292/index.js#L686-L763
-program.parse(argvWithoutOptions.args.concat(argvWithoutOptions.unknown));
-
-if (program.rawArgs.length < 3) {
-	program.help();
-}
+program.parse(argvWithoutOptions.operands.concat(argvWithoutOptions.unknown));
 
 function createPackagesFolder() {
 	const packagesPath = Helper.getPackagesPath();
 	const packagesConfig = path.join(packagesPath, "package.json");
 
 	// Create node_modules folder, otherwise yarn will start walking upwards to find one
-	fsextra.ensureDirSync(path.join(packagesPath, "node_modules"));
+	fs.mkdirSync(path.join(packagesPath, "node_modules"), {recursive: true});
 
 	// Create package.json with private set to true, if it doesn't exist already
 	if (!fs.existsSync(packagesConfig)) {
@@ -81,7 +70,7 @@ function createPackagesFolder() {
 				{
 					private: true,
 					description:
-						"Packages for The Lounge. All packages in node_modules directory will be automatically loaded.",
+						"Packages for The Lounge. Use `thelounge install <package>` command to add a package.",
 					dependencies: {},
 				},
 				null,

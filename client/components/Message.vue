@@ -19,19 +19,23 @@
 		</template>
 		<template v-else-if="isAction()">
 			<span class="from"><span class="only-copy">*** </span></span>
-			<Component :is="messageComponent" :network="network" :message="message" />
+			<component :is="messageComponent" :network="network" :message="message" />
 		</template>
 		<template v-else-if="message.type === 'action'">
 			<span class="from"><span class="only-copy">* </span></span>
 			<span class="content" dir="auto">
-				<Username :user="message.from" dir="auto" />&#32;<ParsedMessage
-					:message="message"
-				/>
+				<Username
+					:user="message.from"
+					:network="network"
+					:channel="channel"
+					dir="auto"
+				/>&#32;<ParsedMessage :message="message" />
 				<LinkPreview
 					v-for="preview in message.previews"
 					:key="preview.link"
 					:keep-scroll-position="keepScrollPosition"
 					:link="preview"
+					:channel="channel"
 				/>
 			</span>
 		</template>
@@ -39,7 +43,7 @@
 			<span v-if="message.type === 'message'" class="from">
 				<template v-if="message.from && message.from.nick">
 					<span class="only-copy">&lt;</span>
-					<Username :user="message.from" />
+					<Username :user="message.from" :network="network" :channel="channel" />
 					<span class="only-copy">&gt; </span>
 				</template>
 			</span>
@@ -53,7 +57,7 @@
 			<span v-else class="from">
 				<template v-if="message.from && message.from.nick">
 					<span class="only-copy">-</span>
-					<Username :user="message.from" />
+					<Username :user="message.from" :network="network" :channel="channel" />
 					<span class="only-copy">- </span>
 				</template>
 			</span>
@@ -64,12 +68,19 @@
 					class="msg-shown-in-active tooltipped tooltipped-e"
 					><span></span
 				></span>
+				<span
+					v-if="message.statusmsgGroup"
+					:aria-label="`This message was only shown to users with ${message.statusmsgGroup} mode`"
+					class="msg-statusmsg tooltipped tooltipped-e"
+					><span>{{ message.statusmsgGroup }}</span></span
+				>
 				<ParsedMessage :network="network" :message="message" />
 				<LinkPreview
 					v-for="preview in message.previews"
 					:key="preview.link"
 					:keep-scroll-position="keepScrollPosition"
 					:link="preview"
+					:channel="channel"
 				/>
 			</span>
 		</template>
