@@ -31,6 +31,12 @@
 					type="button"
 					aria-label="Monospace"
 					@click="applyFormatting('mod+m')"
+				></button>				
+				<button
+					class="format format-k"
+					type="button"
+					aria-label="Color"
+					@click="applyFormatting('mod+k')"
 				></button>
 				<button
 					class="format format-o"
