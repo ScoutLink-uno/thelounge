@@ -345,6 +345,7 @@ p {
 .toolbar button.format-i::before { content: "\f033"; /* http://fontawesome.io/icon/italic/ */ }
 .toolbar button.format-s::before { content: "\f0cc"; /* http://fontawesome.io/icon/strikethrough/ */ }
 .toolbar button.format-m::before { content: "\f121"; /* http://fontawesome.io/icon/code/ */ }
+.toolbar button.format-k::before ( content: "\f53f"; /* https://fontawesome.com/icons/palette */ }
 .toolbar button.format-o::before { content: "\f87d"; /* http://fontawesome.io/icon/remove-format/ */ }
 #form #format::before { content: "\f031"; /* https://fontawesome.io/icons/font/ */ }
 
