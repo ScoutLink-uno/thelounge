@@ -137,8 +137,8 @@
 						<br />
 						The Network name is often, "Scoutlink" or "Twoopy".<br />
 						<br />
-						When using other clients, put the data above in the "Server password"
-						field of your other client.
+						When using other clients, put the data above in the "Server password" field
+						of your other client.
 					</small>
 				</div>
 				<div class="hidden">
@@ -262,6 +262,10 @@
 #connect .connect-sasl-external pre {
 	margin: 0;
 	user-select: text;
+}
+
+.hidden {
+	display: none;
 }
 </style>
 
