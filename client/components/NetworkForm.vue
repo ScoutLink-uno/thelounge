@@ -126,18 +126,33 @@
 							name="password"
 							maxlength="300"
 						/>
-						<small>
-							This field should contain "username/network:password"<br />
-							Username = Your ircmanager.twoopy.nl username.<br />
-							Network = The network that you want to connect to.<br />
-							Password = Your ircmanager.twoopy.nl password.<br />
-							<br />
-							The Network name is often, "Scoutlink" or "Twoopy".<br />
-							<br />
-							When using other clients, put the data above in the "Server password"
-							field of your other client.
-						</small>
 					</RevealPassword>
+				</div>
+				<div class="connect-row" d>
+					<small>
+						This field should contain "username/network:password"<br />
+						Username = Your ircmanager.twoopy.nl username.<br />
+						Network = The network that you want to connect to.<br />
+						Password = Your ircmanager.twoopy.nl password.<br />
+						<br />
+						The Network name is often, "Scoutlink" or "Twoopy".<br />
+						<br />
+						When using other clients, put the data above in the "Server password"
+						field of your other client.
+					</small>
+				</div>
+				<div class="hidden">
+					<label for="connect:nick">Nick</label>
+					<input
+						id="connect:nick"
+						v-model="defaults.nick"
+						class="input nick"
+						name="nick"
+						pattern="[^\s:!@]+"
+						maxlength="100"
+						required
+						@input="onNickChanged"
+					/>
 				</div>
 			</template>
 			<template v-if="!config.lockNetwork">
