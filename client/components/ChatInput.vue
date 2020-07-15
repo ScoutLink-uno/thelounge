@@ -31,7 +31,7 @@
 					type="button"
 					aria-label="Monospace"
 					@click="applyFormatting('mod+m')"
-				></button>				
+				></button>
 				<button
 					class="format format-k"
 					type="button"
@@ -291,17 +291,11 @@ export default {
 				autocompletionRef.hide();
 			}
 
-
-			this.channel.inputHistoryPosition = 0;
-			this.channel.pendingMessage = "";
-			this.$refs.input.value = "";
-			this.setInputSize();
-			this.closeToolbar();
-
 			const resetInput = () => {
 				this.channel.inputHistoryPosition = 0;
 				this.channel.pendingMessage = "";
 				this.$refs.input.value = "";
+				this.closeToolbar();
 				this.setInputSize();
 			};
 
@@ -357,7 +351,7 @@ export default {
 		},
 		blurInput() {
 			this.$refs.input.blur();
-  },
+		},
 		closeToolbar() {
 			this.showToolbar = false;
 		},

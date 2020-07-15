@@ -11,7 +11,9 @@
 				</template>
 				<template v-else>
 					Connect
-					<template v-if="config.lockNetwork">to {{ defaults.name }}</template>
+					<template v-if="config.lockNetwork && $store.state.serverConfiguration.public">
+						to {{ defaults.name }}client/css/style.css
+					</template>
 				</template>
 			</h1>
 			<template v-if="!config.lockNetwork">
