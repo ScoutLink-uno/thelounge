@@ -340,6 +340,23 @@ export function generateUserContextMenu($root, channel, network, user) {
 		},
 	];
 
+	if (user.nick === "ChanServ" && currentChannelUser.mode !== "@") {
+		items.push({
+			type: "divider",
+		});
+		items.push({
+			label: "Request Op (+o)",
+			type: "item",
+			class: "action-request-op",
+			action() {
+				socket.emit("input", {
+					target: channel.id,
+					text: `/msg Chanserv op ${channel.name}`,
+				});
+			},
+		});
+	}
+
 	if (currentChannelUser.mode === "@") {
 		items.push({
 			type: "divider",
