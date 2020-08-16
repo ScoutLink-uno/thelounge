@@ -12,16 +12,13 @@
 			}"
 		>
 			<div class="mentions-popup-title">
-				<span>
-					Recent mentions
-					<span v-if="resolvedMessages.length">({{ resolvedMessages.length }})</span>
-				</span>
+				Recent mentions
 				<button
 					v-if="resolvedMessages.length"
-					class="btn clear-all-mentions"
-					@click="removeMentions()"
+					class="btn hide-all-mentions"
+					@click="hideAllMentions()"
 				>
-					Clear all
+					Hide all
 				</button>
 			</div>
 			<template v-if="resolvedMessages.length === 0">
@@ -29,7 +26,7 @@
 				<p v-else>You have no recent mentions.</p>
 			</template>
 			<template v-for="message in resolvedMessages" v-else>
-				<div :key="message.id" :class="['msg', message.type]">
+				<div :key="message.msgId" :class="['msg', message.type]">
 					<div class="mentions-info">
 						<div>
 							<span class="from">
@@ -80,6 +77,8 @@
 	top: 55px;
 	max-height: 800px;
 	overflow-y: scroll;
+	max-height: 400px;
+	overflow-y: auto;
 	z-index: 2;
 	padding: 10px;
 }
@@ -87,6 +86,7 @@
 .mentions-popup > .mentions-popup-title {
 	display: flex;
 	justify-content: space-between;
+	margin-bottom: 10px;
 	font-size: 20px;
 	align-items: baseline;
 }
@@ -112,6 +112,8 @@
 	border-radius: 5px;
 	padding: 6px;
 	margin-top: 2px;
+	word-wrap: break-word;
+	word-break: break-word; /* Webkit-specific */
 }
 
 .mentions-popup .msg-hide::before {
@@ -127,12 +129,15 @@
 	color: var(--link-color);
 }
 
-.mentions-popup .clear-all-mentions {
-	font-size: 13px;
-	font-weight: normal;
-	display: inline-block;
-	line-height: 14px;
-	text-align: center;
+.mentions-popup .hide-all-mentions {
+	margin: 0;
+	padding: 4px 6px;
+}
+
+@media (min-height: 500px) {
+	.mentions-popup {
+		max-height: 60vh;
+	}
 }
 
 @media (max-width: 768px) {
@@ -212,6 +217,10 @@ export default {
 			);
 
 			socket.emit("mentions:hide", message.msgId);
+		},
+		hideAllMentions() {
+			this.$store.state.mentions = [];
+			socket.emit("mentions:hide_all");
 		},
 		containerClick(event) {
 			if (event.currentTarget === event.target) {
