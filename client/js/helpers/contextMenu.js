@@ -243,19 +243,106 @@ export function generateUserContextMenu($root, channel, network, user) {
 				});
 			},
 		},
+		{
+			type: "divider",
+		},
+		{
+			label: "Custom Warn",
+			type: "item",
+			class: "action-custom-warn",
+			action() {
+				eventbus.emit(
+					"input-dialog",
+					{
+						title: "Warn Reason",
+						text: `Please give in your reason to warn ${user.nick}.`,
+						placeholder: `Reason to warn ${user.nick}...`,
+						button: `Warn ${user.nick}`,
+					},
+					(result) => {
+						if (!result) {
+							return;
+						}
+
+						socket.emit("input", {
+							target: channel.id,
+							text:
+								user.nick +
+								": " +
+								result +
+								" - See scoutlink.net/rules for more information.",
+						});
+					}
+				);
+			},
+		},
+		{
+			label: "Custom Kick",
+			type: "item",
+			class: "action-custom-kick",
+			action() {
+				eventbus.emit(
+					"input-dialog",
+					{
+						title: "Kick Reason",
+						text: `Please give in your reason to kick ${user.nick} from ${channel.name}.`,
+						placeholder: `Reason to kick ${user.nick} from ${channel.name}...`,
+						button: `Kick ${user.nick}`,
+					},
+					(result) => {
+						if (!result) {
+							return;
+						}
+
+						socket.emit("input", {
+							target: channel.id,
+							text:
+								"/kick " +
+								user.nick +
+								" " +
+								result +
+								" - See scoutlink.net/rules for more information.",
+						});
+					}
+				);
+			},
+		},
+		{
+			label: "Custom Kill",
+			type: "item",
+			class: "action-custom-kill",
+			action() {
+				eventbus.emit(
+					"input-dialog",
+					{
+						title: "Kill Reason",
+						text: `Please give in your reason to kill ${user.nick}.`,
+						placeholder: `Reason to kill ${user.nick}...`,
+						button: `Kill ${user.nick}`,
+					},
+					(result) => {
+						if (!result) {
+							return;
+						}
+
+						socket.emit("input", {
+							target: channel.id,
+							text:
+								"/kill " +
+								user.nick +
+								" " +
+								result +
+								" - See scoutlink.net/rules for more information.",
+						});
+					}
+				);
+			},
+		},
 	];
 
 	if (currentChannelUser.mode === "@") {
 		items.push({
-			label: "Kick",
-			type: "item",
-			class: "action-kick",
-			action() {
-				socket.emit("input", {
-					target: channel.id,
-					text: "/kick " + user.nick,
-				});
-			},
+			type: "divider",
 		});
 
 		if (user.mode === "@") {

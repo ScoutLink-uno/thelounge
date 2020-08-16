@@ -370,6 +370,12 @@ p {
 .context-menu-edit::before { content: "\f303"; /* https://fontawesome.com/icons/pencil-alt?style=solid */ }
 .context-menu-clear-history::before { content: "\f1f8"; /* https://fontawesome.com/icons/trash?style=solid */ }
 
+
+.context-menu-action-custom-warn::before { content: "\f06a"; /* https://fontawesome.com/icons/exclamation-circle?style=solid */ }
+.context-menu-action-custom-kick::before { content: "\f05e"; /* https://fontawesome.com/icons/ban?style=solid */ }
+.context-menu-action-custom-kill::before { content: "\f54c"; /* https://fontawesome.com/icons/skull?style=solid */ }
+
+
 .channel-list-item .not-secure-icon::before {
 	content: "\f071"; /* https://fontawesome.com/icons/exclamation-triangle?style=solid */
 }
@@ -2727,6 +2733,7 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 
 /* Image viewer and drag-and-drop overlay */
 
+#input-dialog-overlay,
 #confirm-dialog-overlay,
 #upload-overlay,
 #image-viewer,
@@ -2739,6 +2746,7 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 	justify-content: center;
 }
 
+#input-dialog-overlay,
 #confirm-dialog-overlay,
 #upload-overlay,
 #image-viewer {
@@ -2755,11 +2763,16 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 	user-select: none;
 }
 
+#input-dialog-overlay.opened,
 #confirm-dialog-overlay.opened,
 #upload-overlay.is-dragover,
 #image-viewer.opened {
 	visibility: visible;
 	opacity: 1;
+}
+
+#input-dialog-overlay {
+	background: rgba(0, 0, 0, 0.4)
 }
 
 #confirm-dialog-overlay,
