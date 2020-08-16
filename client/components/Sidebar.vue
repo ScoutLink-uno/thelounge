@@ -52,22 +52,12 @@
 					aria-controls="settings"
 					:aria-selected="$route.name === 'Settings'"
 			/></span>
-			<span
-				class="tooltipped tooltipped-n tooltipped-no-touch"
-				:aria-label="
-					$store.state.serverConfiguration.isUpdateAvailable
-						? 'Help\n(update available)'
-						: 'Help'
-				"
+			<span class="tooltipped tooltipped-n tooltipped-no-touch" aria-label="Help"
 				><router-link
 					to="/help"
 					tag="button"
 					active-class="active"
-					:class="[
-						'icon',
-						'help',
-						{notified: $store.state.serverConfiguration.isUpdateAvailable},
-					]"
+					:class="['icon', 'help']"
 					aria-label="Help"
 					role="tab"
 					aria-controls="help"
