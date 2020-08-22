@@ -381,6 +381,14 @@ p {
 /* Chanop stuff */
 .context-menu-action-request-op::before { content: "\f1fa"; /* https://fontawesome.com/icons/at?style=solid */ }
 
+/* IRCOP actions */
+.context-menu-action-sa-nick::before { content: "\f4ff"; /* https://fontawesome.com/icons/user-edit?style=solid */ }
+.context-menu-action-sa-punt::before { content: "\f472"; /* https://fontawesome.com/icons/dolly?style=solid */ }
+
+/* Fun stuff */
+.context-menu-action-fun-defenestrate::before {  content: "\f52b"; /* https://fontawesome.com/icons/door-open?style=solid */  }
+
+
 
 .channel-list-item .not-secure-icon::before {
 	content: "\f071"; /* https://fontawesome.com/icons/exclamation-triangle?style=solid */

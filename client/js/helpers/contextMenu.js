@@ -2,6 +2,7 @@
 
 import socket from "../socket";
 import eventbus from "../eventbus";
+import store from "../store";
 
 export function generateChannelContextMenu($root, channel, network) {
 	const typeMap = {
@@ -307,38 +308,141 @@ export function generateUserContextMenu($root, channel, network, user) {
 				);
 			},
 		},
-		{
-			label: "Custom Kill",
-			type: "item",
-			class: "action-custom-kill",
-			action() {
-				eventbus.emit(
-					"input-dialog",
-					{
-						title: "Kill Reason",
-						text: `Please give in your reason to kill ${user.nick}.`,
-						placeholder: `Reason to kill ${user.nick}...`,
-						button: `Kill ${user.nick}`,
-					},
-					(result) => {
-						if (!result) {
-							return;
-						}
-
-						socket.emit("input", {
-							target: channel.id,
-							text:
-								"/kill " +
-								user.nick +
-								" " +
-								result +
-								" - See scoutlink.net/rules for more information.",
-						});
-					}
-				);
-			},
-		},
 	];
+	if (store.state.settings.ircop) {
+		items.push(
+			{
+				label: "Custom Kill",
+				type: "item",
+				class: "action-custom-kill",
+				action() {
+					eventbus.emit(
+						"input-dialog",
+						{
+							title: "Kill Reason",
+							text: `Please give in your reason to kill ${user.nick}.`,
+							placeholder: `Reason to kill ${user.nick}...`,
+							button: `Kill ${user.nick}`,
+						},
+						(result) => {
+							if (!result) {
+								return;
+							}
+
+							socket.emit("input", {
+								target: channel.id,
+								text:
+									"/kill " +
+									user.nick +
+									" " +
+									result +
+									" - See scoutlink.net/rules for more information.",
+							});
+						}
+					);
+				},
+			},
+			{
+				type: "divider",
+			},
+			{
+				label: "Change nickname",
+				type: "item",
+				class: "action-sa-nick",
+				action() {
+					eventbus.emit(
+						"input-dialog",
+						{
+							title: `Change ${user.nick}'s nickname`,
+							text: `What do you want to change ${user.nick} nickname to?`,
+							placeholder: `New nickname for ${user.nick}...`,
+							button: `sanick ${user.nick}`,
+						},
+						(result) => {
+							if (!result) {
+								return;
+							}
+
+							socket.emit("input", {
+								target: channel.id,
+								text: `/sanick ${user.nick} ${result}`,
+							});
+						}
+					);
+				},
+			},
+			{
+				label: "Move user",
+				type: "item",
+				class: "action-sa-punt",
+				action() {
+					eventbus.emit(
+						"input-dialog",
+						{
+							title: `Move user ${user.nick}`,
+							text: `What channel do you want to move ${user.nick} to?`,
+							placeholder: `Move ${user.nick} to...`,
+							button: `Move ${user.nick}`,
+						},
+						(result) => {
+							if (!result) {
+								return;
+							}
+							// Sapart
+							socket.emit("input", {
+								target: channel.id,
+								text: `/sapart ${user.nick} ${channel.name}`,
+							});
+							// Sajoin
+							socket.emit("input", {
+								target: channel.id,
+								text: `/sajoin ${user.nick} ${result}`,
+							});
+						}
+					);
+				},
+			},
+			{
+				type: "divider",
+			},
+			{
+				label: "Defenstrate",
+				type: "item",
+				class: "action-fun-defenestrate",
+				action() {
+					eventbus.emit(
+						"input-dialog",
+						{
+							title: `Defenestrate user ${user.nick}`,
+							text: `What channel do you want to defenestrates ${user.nick} into?`,
+							placeholder: `Defenestrate ${user.nick} into...`,
+							button: `Defenestrate ${user.nick}`,
+						},
+						(result) => {
+							if (!result) {
+								return;
+							}
+							// Action msg
+							socket.emit("input", {
+								target: channel.id,
+								text: `/me defenestrates ${user.nick} straight into ${result}`,
+							});
+							// Sapart
+							socket.emit("input", {
+								target: channel.id,
+								text: `/sapart ${user.nick} ${channel.name}`,
+							});
+							// Sajoin
+							socket.emit("input", {
+								target: channel.id,
+								text: `/sajoin ${user.nick} ${result}`,
+							});
+						}
+					);
+				},
+			}
+		);
+	}
 
 	if (user.nick === "ChanServ" && currentChannelUser.mode !== "@") {
 		items.push({
