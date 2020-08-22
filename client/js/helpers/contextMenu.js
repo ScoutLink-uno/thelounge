@@ -68,6 +68,18 @@ export function generateChannelContextMenu($root, channel, network) {
 					}),
 			},
 			{
+				label: "Close all private messages",
+				type: "item",
+				class: "close-pms",
+				action() {
+					network.channels.forEach(function (channel) {
+						if (channel.type == "query") {
+							$root.closeChannel(channel);
+						}
+					});
+				},
+			},
+			{
 				type: "divider",
 			},
 			{

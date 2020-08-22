@@ -386,8 +386,10 @@ p {
 .context-menu-action-sa-punt::before { content: "\f472"; /* https://fontawesome.com/icons/dolly?style=solid */ }
 
 /* Fun stuff */
-.context-menu-action-fun-defenestrate::before {  content: "\f52b"; /* https://fontawesome.com/icons/door-open?style=solid */  }
+.context-menu-action-fun-defenestrate::before { content: "\f52b"; /* https://fontawesome.com/icons/door-open?style=solid */ }
 
+/* Close all pms */
+.context-menu-close-pms::before { content: "\f00d"; /* https://fontawesome.com/icons/times?style=solid */ }
 
 
 .channel-list-item .not-secure-icon::before {
