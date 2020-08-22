@@ -68,6 +68,9 @@ export function generateChannelContextMenu($root, channel, network) {
 					}),
 			},
 			{
+				type: "divider",
+			},
+			{
 				label: "IRC - Connect to Network",
 				type: "item",
 				class: "connect",
@@ -86,6 +89,9 @@ export function generateChannelContextMenu($root, channel, network) {
 						target: channel.id,
 						text: "/znc disconnect",
 					}),
+			},
+			{
+				type: "divider",
 			},
 			network.status.connected
 				? {
