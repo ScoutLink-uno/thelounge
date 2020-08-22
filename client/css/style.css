@@ -373,9 +373,12 @@ p {
 .context-menu-clear-history::before { content: "\f1f8"; /* https://fontawesome.com/icons/trash?style=solid */ }
 
 
+/* Custom actions */
 .context-menu-action-custom-warn::before { content: "\f06a"; /* https://fontawesome.com/icons/exclamation-circle?style=solid */ }
 .context-menu-action-custom-kick::before { content: "\f05e"; /* https://fontawesome.com/icons/ban?style=solid */ }
 .context-menu-action-custom-kill::before { content: "\f54c"; /* https://fontawesome.com/icons/skull?style=solid */ }
+
+/* Chanop stuff */
 .context-menu-action-request-op::before { content: "\f1fa"; /* https://fontawesome.com/icons/at?style=solid */ }
 
 
