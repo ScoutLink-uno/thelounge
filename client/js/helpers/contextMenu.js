@@ -479,16 +479,96 @@ export function generateUserContextMenu($root, channel, network, user) {
 		});
 	}
 
-	if (currentChannelUser.mode === "@") {
+	if (currentChannelUser.mode === "@" || store.state.settings.ircop) {
 		items.push({
 			type: "divider",
 		});
+
+		if (store.state.settings.ircop) {
+			if (user.mode === "!") {
+				items.push({
+					label: "Revoke operAdmin (-Y)",
+					type: "item",
+					class: "action-mode-Y",
+					action() {
+						socket.emit("input", {
+							target: channel.id,
+							text: "/deoperadmin " + user.nick,
+						});
+					},
+				});
+			} else {
+				items.push({
+					label: "Give operAdmin (+Y)",
+					type: "item",
+					class: "action-mode-Y",
+					action() {
+						socket.emit("input", {
+							target: channel.id,
+							text: "/operadmin " + user.nick,
+						});
+					},
+				});
+			}
+
+			if (user.mode === "~") {
+				items.push({
+					label: "Revoke owner (-q)",
+					type: "item",
+					class: "action-mode-q",
+					action() {
+						socket.emit("input", {
+							target: channel.id,
+							text: "/deowner " + user.nick,
+						});
+					},
+				});
+			} else {
+				items.push({
+					label: "Give owner (+q)",
+					type: "item",
+					class: "action-mode-q",
+					action() {
+						socket.emit("input", {
+							target: channel.id,
+							text: "/owner " + user.nick,
+						});
+					},
+				});
+			}
+
+			if (user.mode === "&") {
+				items.push({
+					label: "Revoke admin (-a)",
+					type: "item",
+					class: "action-mode-a",
+					action() {
+						socket.emit("input", {
+							target: channel.id,
+							text: "/deadmin " + user.nick,
+						});
+					},
+				});
+			} else {
+				items.push({
+					label: "Give admin (+a)",
+					type: "item",
+					class: "action-mode-a",
+					action() {
+						socket.emit("input", {
+							target: channel.id,
+							text: "/admin " + user.nick,
+						});
+					},
+				});
+			}
+		}
 
 		if (user.mode === "@") {
 			items.push({
 				label: "Revoke operator (-o)",
 				type: "item",
-				class: "action-op",
+				class: "action-mode-o",
 				action() {
 					socket.emit("input", {
 						target: channel.id,
@@ -500,7 +580,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 			items.push({
 				label: "Give operator (+o)",
 				type: "item",
-				class: "action-op",
+				class: "action-mode-o",
 				action() {
 					socket.emit("input", {
 						target: channel.id,
@@ -510,11 +590,37 @@ export function generateUserContextMenu($root, channel, network, user) {
 			});
 		}
 
+		if (user.mode === "%") {
+			items.push({
+				label: "Revoke halfop (-h)",
+				type: "item",
+				class: "action-mode-h",
+				action() {
+					socket.emit("input", {
+						target: channel.id,
+						text: "/dehop " + user.nick,
+					});
+				},
+			});
+		} else {
+			items.push({
+				label: "Give halfop (+h)",
+				type: "item",
+				class: "action-mode-h",
+				action() {
+					socket.emit("input", {
+						target: channel.id,
+						text: "/hop " + user.nick,
+					});
+				},
+			});
+		}
+
 		if (user.mode === "+") {
 			items.push({
 				label: "Revoke voice (-v)",
 				type: "item",
-				class: "action-voice",
+				class: "action-mode-v",
 				action() {
 					socket.emit("input", {
 						target: channel.id,
@@ -526,7 +632,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 			items.push({
 				label: "Give voice (+v)",
 				type: "item",
-				class: "action-voice",
+				class: "action-mode-v",
 				action() {
 					socket.emit("input", {
 						target: channel.id,

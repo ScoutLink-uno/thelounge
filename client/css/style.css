@@ -366,8 +366,6 @@ p {
 .context-menu-connect::before { content: "\f0c1"; /* https://fontawesome.com/icons/link?style=solid */ }
 .context-menu-action-whois::before { content: "\f05a"; /* http://fontawesome.io/icon/info-circle/  */ }
 .context-menu-action-kick::before { content: "\f05e"; /* http://fontawesome.io/icon/ban/ */ }
-.context-menu-action-op::before { content: "\f1fa"; /* http://fontawesome.io/icon/at/ */ }
-.context-menu-action-voice::before { content: "\f067"; /* http://fontawesome.io/icon/plus/ */ }
 .context-menu-network::before { content: "\f233"; /* https://fontawesome.com/icons/server?style=solid */ }
 .context-menu-edit::before { content: "\f303"; /* https://fontawesome.com/icons/pencil-alt?style=solid */ }
 .context-menu-clear-history::before { content: "\f1f8"; /* https://fontawesome.com/icons/trash?style=solid */ }
@@ -390,6 +388,14 @@ p {
 
 /* Close all pms */
 .context-menu-close-pms::before { content: "\f00d"; /* https://fontawesome.com/icons/times?style=solid */ }
+
+/* Modes */
+.context-menu-action-mode-Y::before { content: "\f12a"; /* https://fontawesome.com/icons/exclamation?style=solid */ }
+.context-menu-action-mode-q::before { content: "\f505"; /* https://fontawesome.com/icons/user-shield?style=solid */ }
+.context-menu-action-mode-a::before { content: "\f4fe"; /* https://fontawesome.com/icons/user-cog?style=solid */ }
+.context-menu-action-mode-o::before { content: "\f1fa"; /* https://fontawesome.com/icons/at?style=solid */ }
+.context-menu-action-mode-h::before { content: "\f541"; /* https://fontawesome.com/icons/percentage?style=solid */ }
+.context-menu-action-mode-v::before { content: "\f067"; /* https://fontawesome.com/icons/plus?style=solid */ }
 
 
 .channel-list-item .not-secure-icon::before {
