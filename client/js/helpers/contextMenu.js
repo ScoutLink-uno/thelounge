@@ -131,26 +131,93 @@ export function generateChannelContextMenu($root, channel, network) {
 
 	// Add menu items for channels
 	if (channel.type === "channel") {
-		items.push({
-			label: "Edit topic",
-			type: "item",
-			class: "edit",
-			action() {
-				channel.editTopic = true;
-				$root.switchToChannel(channel);
+		items.push(
+			{
+				label: "Edit topic",
+				type: "item",
+				class: "edit",
+				action() {
+					channel.editTopic = true;
+					$root.switchToChannel(channel);
+				},
 			},
-		});
-		items.push({
-			label: "List banned users",
-			type: "item",
-			class: "list",
-			action() {
-				socket.emit("input", {
-					target: channel.id,
-					text: "/banlist",
-				});
+			{
+				label: "List banned users",
+				type: "item",
+				class: "list",
+				action() {
+					socket.emit("input", {
+						target: channel.id,
+						text: "/banlist",
+					});
+				},
 			},
-		});
+			{
+				type: "divider",
+			},
+			{
+				label: "Give all users voice",
+				type: "item",
+				class: "action-mode-mass-voice",
+				action() {
+					var userlist = "";
+					channel.users.forEach(function (user) {
+						if (user.mode == "") {
+							userlist = userlist + user.nick + " ";
+						}
+					});
+					socket.emit("input", {
+						target: channel.id,
+						text: "/voice " + userlist,
+					});
+				},
+			},
+			{
+				label: "Take all users voice",
+				type: "item",
+				class: "action-mode-mass-devoice",
+				action() {
+					var userlist = "";
+					channel.users.forEach(function (user) {
+						if (user.mode == "+") {
+							userlist = userlist + user.nick + " ";
+						}
+					});
+					socket.emit("input", {
+						target: channel.id,
+						text: "/devoice " + userlist,
+					});
+				},
+			},
+			{
+				type: "divider",
+			},
+			{
+				label: "Moderate Chat",
+				type: "item",
+				class: "action-mode-set-m",
+				action() {
+					socket.emit("input", {
+						target: channel.id,
+						text: "/mode +m",
+					});
+				},
+			},
+			{
+				label: "Unmoderate Chat",
+				type: "item",
+				class: "action-mode-unset-m",
+				action() {
+					socket.emit("input", {
+						target: channel.id,
+						text: "/mode -m",
+					});
+				},
+			},
+			{
+				type: "divider",
+			}
+		);
 	}
 
 	// Add menu items for queries
