@@ -5,6 +5,10 @@ import eventbus from "../eventbus";
 import store from "../store";
 
 export function generateChannelContextMenu($root, channel, network) {
+	const currentChannelUser = channel
+		? channel.users.find((u) => u.nick === network.nick) || {}
+		: {};
+
 	const typeMap = {
 		lobby: "network",
 		channel: "chan",
@@ -154,70 +158,75 @@ export function generateChannelContextMenu($root, channel, network) {
 			},
 			{
 				type: "divider",
-			},
-			{
-				label: "Give all users voice",
-				type: "item",
-				class: "action-mode-mass-voice",
-				action() {
-					var userlist = "";
-					channel.users.forEach(function (user) {
-						if (user.mode == "") {
-							userlist = userlist + user.nick + " ";
-						}
-					});
-					socket.emit("input", {
-						target: channel.id,
-						text: "/voice " + userlist,
-					});
-				},
-			},
-			{
-				label: "Take all users voice",
-				type: "item",
-				class: "action-mode-mass-devoice",
-				action() {
-					var userlist = "";
-					channel.users.forEach(function (user) {
-						if (user.mode == "+") {
-							userlist = userlist + user.nick + " ";
-						}
-					});
-					socket.emit("input", {
-						target: channel.id,
-						text: "/devoice " + userlist,
-					});
-				},
-			},
-			{
-				type: "divider",
-			},
-			{
-				label: "Moderate Chat",
-				type: "item",
-				class: "action-mode-set-m",
-				action() {
-					socket.emit("input", {
-						target: channel.id,
-						text: "/mode +m",
-					});
-				},
-			},
-			{
-				label: "Unmoderate Chat",
-				type: "item",
-				class: "action-mode-unset-m",
-				action() {
-					socket.emit("input", {
-						target: channel.id,
-						text: "/mode -m",
-					});
-				},
-			},
-			{
-				type: "divider",
 			}
 		);
+
+		if (currentChannelUser.mode === "@" || store.state.settings.ircop) {
+			items.push(
+				{
+					label: "Give all users voice",
+					type: "item",
+					class: "action-mode-mass-voice",
+					action() {
+						var userlist = "";
+						channel.users.forEach(function (user) {
+							if (user.mode == "") {
+								userlist = userlist + user.nick + " ";
+							}
+						});
+						socket.emit("input", {
+							target: channel.id,
+							text: "/voice " + userlist,
+						});
+					},
+				},
+				{
+					label: "Take all users voice",
+					type: "item",
+					class: "action-mode-mass-devoice",
+					action() {
+						var userlist = "";
+						channel.users.forEach(function (user) {
+							if (user.mode == "+") {
+								userlist = userlist + user.nick + " ";
+							}
+						});
+						socket.emit("input", {
+							target: channel.id,
+							text: "/devoice " + userlist,
+						});
+					},
+				},
+				{
+					type: "divider",
+				},
+				{
+					label: "Moderate Chat",
+					type: "item",
+					class: "action-mode-set-m",
+					action() {
+						socket.emit("input", {
+							target: channel.id,
+							text: "/mode +m",
+						});
+					},
+				},
+				{
+					label: "Unmoderate Chat",
+					type: "item",
+					class: "action-mode-unset-m",
+					action() {
+						socket.emit("input", {
+							target: channel.id,
+							text: "/mode -m",
+						});
+					},
+				},
+				{
+					type: "divider",
+				}
+			);
+		}
 	}
 
 	// Add menu items for queries
