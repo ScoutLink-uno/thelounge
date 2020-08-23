@@ -397,6 +397,11 @@ p {
 .context-menu-action-mode-h::before { content: "\f541"; /* https://fontawesome.com/icons/percentage?style=solid */ }
 .context-menu-action-mode-v::before { content: "\f067"; /* https://fontawesome.com/icons/plus?style=solid */ }
 
+/* Custom Modes */
+.context-menu-action-mode-mass-voice::before { content: "\f0c0"; /* https://fontawesome.com/icons/users?style=solid */ }
+.context-menu-action-mode-mass-devoice::before { content: "\e073"; /* https://fontawesome.com/icons/users-slash?style=solid */ }
+.context-menu-action-mode-set-m::before { content: "\f4b3"; /* https://fontawesome.com/icons/comment-slash?style=solid */ }
+.context-menu-action-mode-unset-m::before { content: "\f075"; /* https://fontawesome.com/icons/comment?style=solid */ }
 
 .channel-list-item .not-secure-icon::before {
 	content: "\f071"; /* https://fontawesome.com/icons/exclamation-triangle?style=solid */
