@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 "use strict";
 
 import socket from "../socket";
@@ -77,7 +78,7 @@ export function generateChannelContextMenu($root, channel, network) {
 				class: "close-pms",
 				action() {
 					network.channels.forEach(function (channel) {
-						if (channel.type == "query") {
+						if (channel.type === "query") {
 							$root.closeChannel(channel);
 						}
 					});
@@ -168,9 +169,9 @@ export function generateChannelContextMenu($root, channel, network) {
 					type: "item",
 					class: "action-mode-mass-voice",
 					action() {
-						var userlist = "";
+						let userlist = "";
 						channel.users.forEach(function (user) {
-							if (user.mode == "") {
+							if (user.mode === "") {
 								userlist = userlist + user.nick + " ";
 							}
 						});
@@ -185,9 +186,9 @@ export function generateChannelContextMenu($root, channel, network) {
 					type: "item",
 					class: "action-mode-mass-devoice",
 					action() {
-						var userlist = "";
+						let userlist = "";
 						channel.users.forEach(function (user) {
-							if (user.mode == "+") {
+							if (user.mode === "+") {
 								userlist = userlist + user.nick + " ";
 							}
 						});
@@ -339,6 +340,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 			},
 		},
 	];
+
 	if (user.nick !== "ChanServ") {
 		items.push(
 			{
@@ -353,7 +355,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 						"input-dialog",
 						{
 							title: "Warn Reason",
-							text: `Please give in your reason to warn ${user.nick}.`,
+							text: `Please give your reason to warn ${user.nick}.`,
 							placeholder: `Reason to warn ${user.nick}...`,
 							button: `Warn ${user.nick}`,
 						},
@@ -373,39 +375,42 @@ export function generateUserContextMenu($root, channel, network, user) {
 						}
 					);
 				},
-			},
-			{
-				label: "Custom Kick",
-				type: "item",
-				class: "action-custom-kick",
-				action() {
-					eventbus.emit(
-						"input-dialog",
-						{
-							title: "Kick Reason",
-							text: `Please give in your reason to kick ${user.nick} from ${channel.name}.`,
-							placeholder: `Reason to kick ${user.nick} from ${channel.name}...`,
-							button: `Kick ${user.nick}`,
-						},
-						(result) => {
-							if (!result) {
-								return;
-							}
-
-							socket.emit("input", {
-								target: channel.id,
-								text:
-									"/kick " +
-									user.nick +
-									" " +
-									result +
-									" - See scoutlink.net/rules for more information.",
-							});
-						}
-					);
-				},
 			}
 		);
+	}
+
+	if (user.nick !== "ChanServ" && currentChannelUser.mode === "@") {
+		items.push({
+			label: "Custom Kick",
+			type: "item",
+			class: "action-custom-kick",
+			action() {
+				eventbus.emit(
+					"input-dialog",
+					{
+						title: "Kick Reason",
+						text: `Please give your reason to kick ${user.nick} from ${channel.name}.`,
+						placeholder: `Reason to kick ${user.nick} from ${channel.name}...`,
+						button: `Kick ${user.nick}`,
+					},
+					(result) => {
+						if (!result) {
+							return;
+						}
+
+						socket.emit("input", {
+							target: channel.id,
+							text:
+								"/kick " +
+								user.nick +
+								" " +
+								result +
+								" - See scoutlink.net/rules for more information.",
+						});
+					}
+				);
+			},
+		});
 	}
 
 	if (store.state.settings.ircop && user.nick !== "ChanServ") {
@@ -419,7 +424,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 						"input-dialog",
 						{
 							title: "Kill Reason",
-							text: `Please give in your reason to kill ${user.nick}.`,
+							text: `Please give your reason to kill ${user.nick}.`,
 							placeholder: `Reason to kill ${user.nick}...`,
 							button: `Kill ${user.nick}`,
 						},
@@ -487,6 +492,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 							if (!result) {
 								return;
 							}
+
 							// Sapart
 							socket.emit("input", {
 								target: channel.id,
@@ -521,6 +527,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 							if (!result) {
 								return;
 							}
+
 							// Action msg
 							socket.emit("input", {
 								target: channel.id,

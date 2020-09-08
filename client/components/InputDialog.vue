@@ -127,18 +127,17 @@ export default {
 			this.callback = callback;
 			this.result = null;
 			this.reason = null;
-
 		},
 		close(canceled) {
 			this.data = null;
-			
+
 			/* Check if action was canceled */
-			if (!canceled == true) {
+			if (!canceled === true) {
 				return false;
 			}
 
 			/* Check if the reason is not nothing */
-			if (this.reason == null) {
+			if (this.reason === null) {
 				return false;
 			}
 
