@@ -379,7 +379,8 @@ export function generateUserContextMenu($root, channel, network, user) {
 		);
 	}
 
-	if (user.nick !== "ChanServ" && currentChannelUser.mode === "@") {
+	if ((user.nick !== "ChanServ" && currentChannelUser.mode === "@") ||
+		(user.nick !== "ChanServ" && store.state.settings.ircop)) {
 		items.push({
 			label: "Custom Kick",
 			type: "item",
