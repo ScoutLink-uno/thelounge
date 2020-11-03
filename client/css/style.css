@@ -408,7 +408,7 @@ p {
 .context-menu-item.context-menu-Context-Uno-Green { color: #2ecc40; }
 .context-menu-item.context-menu-Context-Uno-Red { color: #ff4136; }
 .context-menu-item.context-menu-Context-Uno-Yellow { color: #ffdc00; }
-.card { cursor:pointer; }
+.card { cursor: pointer; }
 
 .channel-list-item .not-secure-icon::before {
 	content: "\f071"; /* https://fontawesome.com/icons/exclamation-triangle?style=solid */

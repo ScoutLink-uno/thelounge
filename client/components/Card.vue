@@ -14,14 +14,16 @@ export default {
 	},
 	methods: {
 		onClick(event) {
-			if (this.number == "") {
+			if (this.number === "") {
 				// Handle wilds
 				let card;
-				if (this.color == "Wild DrawFour") {
+
+				if (this.color === "Wild DrawFour") {
 					card = " wd4";
 				} else {
 					card = " w";
 				}
+
 				eventbus.emit("contextmenu:unowild", {
 					event: event,
 					channel: this.$store.state.activeChannel.channel,
@@ -29,12 +31,14 @@ export default {
 				});
 			} else {
 				// Handle normal cards
-				if (this.number == " Skip") {
+				if (this.number === " Skip") {
 					this.number = " s";
 				}
-				if (this.number == " Reverse") {
+
+				if (this.number === " Reverse") {
 					this.number = " r";
 				}
+
 				socket.emit("input", {
 					target: this.$store.state.activeChannel.channel.id,
 					text: ".play " + this.color.charAt(0).toLowerCase() + this.number,
