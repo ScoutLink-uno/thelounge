@@ -38,7 +38,11 @@
 </template>
 
 <script>
-import {generateUserContextMenu, generateChannelContextMenu} from "../js/helpers/contextMenu.js";
+import {
+	generateUserContextMenu,
+	generateChannelContextMenu,
+	generateUnoWildContextMenu,
+} from "../js/helpers/contextMenu.js";
 import eventbus from "../js/eventbus";
 
 export default {
@@ -62,17 +66,23 @@ export default {
 		eventbus.on("escapekey", this.close);
 		eventbus.on("contextmenu:user", this.openUserContextMenu);
 		eventbus.on("contextmenu:channel", this.openChannelContextMenu);
+		eventbus.on("contextmenu:unowild", this.openUnoWildContextMenu);
 	},
 	destroyed() {
 		eventbus.off("escapekey", this.close);
 		eventbus.off("contextmenu:user", this.openUserContextMenu);
 		eventbus.off("contextmenu:channel", this.openChannelContextMenu);
+		eventbus.off("contextmenu:unowild", this.openUnoWildContextMenu);
 
 		this.close();
 	},
 	methods: {
 		openChannelContextMenu(data) {
 			const items = generateChannelContextMenu(this.$root, data.channel, data.network);
+			this.open(data.event, items);
+		},
+		openUnoWildContextMenu(data) {
+			const items = generateUnoWildContextMenu(this.$root, data.channel, data.card);
 			this.open(data.event, items);
 		},
 		openUserContextMenu(data) {

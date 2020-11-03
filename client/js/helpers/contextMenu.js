@@ -379,8 +379,10 @@ export function generateUserContextMenu($root, channel, network, user) {
 		);
 	}
 
-	if ((user.nick !== "ChanServ" && currentChannelUser.mode === "@") ||
-		(user.nick !== "ChanServ" && store.state.settings.ircop)) {
+	if (
+		(user.nick !== "ChanServ" && currentChannelUser.mode === "@") ||
+		(user.nick !== "ChanServ" && store.state.settings.ircop)
+	) {
 		items.push({
 			label: "Custom Kick",
 			type: "item",
@@ -734,6 +736,57 @@ export function generateUserContextMenu($root, channel, network, user) {
 			});
 		}
 	}
+
+	return items;
+}
+
+export function generateUnoWildContextMenu($root, channel, card) {
+	const items = [
+		{
+			label: "Blue",
+			type: "item",
+			class: "Context-Uno-Blue",
+			action() {
+				socket.emit("input", {
+					target: channel.id,
+					text: ".play" + card + " b",
+				});
+			},
+		},
+		{
+			label: "Green",
+			type: "item",
+			class: "Context-Uno-Green",
+			action() {
+				socket.emit("input", {
+					target: channel.id,
+					text: ".play" + card + " g",
+				});
+			},
+		},
+		{
+			label: "Red",
+			type: "item",
+			class: "Context-Uno-Red",
+			action() {
+				socket.emit("input", {
+					target: channel.id,
+					text: ".play" + card + " r",
+				});
+			},
+		},
+		{
+			label: "Yellow",
+			type: "item",
+			class: "Context-Uno-Yellow",
+			action() {
+				socket.emit("input", {
+					target: channel.id,
+					text: ".play" + card + " y",
+				});
+			},
+		},
+	];
 
 	return items;
 }

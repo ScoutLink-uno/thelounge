@@ -403,6 +403,13 @@ p {
 .context-menu-action-mode-set-m::before { content: "\f4b3"; /* https://fontawesome.com/icons/comment-slash?style=solid */ }
 .context-menu-action-mode-unset-m::before { content: "\f075"; /* https://fontawesome.com/icons/comment?style=solid */ }
 
+/* Uno */
+.context-menu-item.context-menu-Context-Uno-Blue { color: #0074d9; }
+.context-menu-item.context-menu-Context-Uno-Green { color: #2ecc40; }
+.context-menu-item.context-menu-Context-Uno-Red { color: #ff4136; }
+.context-menu-item.context-menu-Context-Uno-Yellow { color: #ffdc00; }
+
+
 .channel-list-item .not-secure-icon::before {
 	content: "\f071"; /* https://fontawesome.com/icons/exclamation-triangle?style=solid */
 }
