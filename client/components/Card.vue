@@ -18,9 +18,9 @@ export default {
 				// Handle wilds
 				let card;
 				if (this.color == "Wild DrawFour") {
-					card = " WD4";
+					card = " wd4";
 				} else {
-					card = this.color;
+					card = " w";
 				}
 				eventbus.emit("contextmenu:unowild", {
 					event: event,
