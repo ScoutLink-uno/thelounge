@@ -5,12 +5,15 @@ import findChannels from "./ircmessageparser/findChannels";
 import {findLinks} from "./ircmessageparser/findLinks";
 import findEmoji from "./ircmessageparser/findEmoji";
 import findNames from "./ircmessageparser/findNames";
+import findCards from "./ircmessageparser/findUnoCards";
 import merge from "./ircmessageparser/merge";
 import emojiMap from "./fullnamemap.json";
 import LinkPreviewToggle from "../../components/LinkPreviewToggle.vue";
 import LinkPreviewFileSize from "../../components/LinkPreviewFileSize.vue";
 import InlineChannel from "../../components/InlineChannel.vue";
+import Card from "../../components/Card.vue";
 import Username from "../../components/Username.vue";
+import {clean} from "semver";
 
 const emojiModifiersRegex = /[\u{1f3fb}-\u{1f3ff}]|\u{fe0f}/gu;
 
@@ -83,9 +86,17 @@ function parse(createElement, text, message = undefined, network = undefined) {
 	const channelParts = findChannels(cleanText, channelPrefixes, userModes);
 	const linkParts = findLinks(cleanText);
 	const emojiParts = findEmoji(cleanText);
+	const unocardParts = findCards(cleanText);
 	const nameParts = findNames(cleanText, message ? message.users || [] : []);
 
-	const parts = channelParts.concat(linkParts).concat(emojiParts).concat(nameParts);
+	const parts = channelParts
+		.concat(linkParts)
+		.concat(emojiParts)
+		.concat(nameParts)
+		.concat(unocardParts);
+
+	// The channel the message belongs to might not exist if the user isn't joined to it.
+	const messageChannel = message ? message.channel : null;
 
 	// Merge the styling information with the channels / URLs / nicks / text objects and
 	// generate HTML strings with the resulting fragments
@@ -184,6 +195,8 @@ function parse(createElement, text, message = undefined, network = undefined) {
 						user: {
 							nick: textPart.nick,
 						},
+						channel: messageChannel,
+						network,
 					},
 					attrs: {
 						dir: "auto",
@@ -191,8 +204,18 @@ function parse(createElement, text, message = undefined, network = undefined) {
 				},
 				fragments
 			);
+		} else if (textPart.color) {
+			return createElement(
+				Card,
+				{
+					props: {
+						color: textPart.color,
+						number: textPart.number,
+					},
+				},
+				fragments
+			);
 		}
-
 		return fragments;
 	});
 }

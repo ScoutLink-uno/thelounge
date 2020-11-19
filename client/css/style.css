@@ -40,6 +40,9 @@
 
 	/* Color of the progress bar that appears as a file is being uploaded to the server. Defaults to button color */
 	--upload-progressbar-color: var(--button-color);
+
+	/* Color of borders for forms, chat, header, etc */
+	--border-color: #e7e7e7;
 }
 
 ::placeholder {
@@ -285,14 +288,15 @@ p {
 #viewport .rt::before,
 #chat button.mentions::before,
 #chat button.menu::before,
+.toolbar button.format::before,
+#chat button.search::before,
 .channel-list-item::before,
 #footer .icon,
 #chat .count::before,
 #connect .extra-help,
 #settings .extra-help,
 #settings #play::before,
-#form #upload::before,
-#form #submit::before,
+#form .chat-input-button::before,
 #chat .msg[data-type="away"] .from::before,
 #chat .msg[data-type="back"] .from::before,
 #chat .msg[data-type="invite"] .from::before,
@@ -338,10 +342,21 @@ p {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.toolbar button.format-b::before { content: "\f032"; /* http://fontawesome.io/icon/bold/ */ }
+.toolbar button.format-u::before { content: "\f0cd"; /* http://fontawesome.io/icon/underline/ */ }
+.toolbar button.format-i::before { content: "\f033"; /* http://fontawesome.io/icon/italic/ */ }
+.toolbar button.format-s::before { content: "\f0cc"; /* http://fontawesome.io/icon/strikethrough/ */ }
+.toolbar button.format-m::before { content: "\f121"; /* http://fontawesome.io/icon/code/ */ }
+.toolbar button.format-k::before { content: "\f53f"; /* https://fontawesome.com/icons/palette */ }
+.toolbar button.format-k::before { content: "\f53f"; /* https://fontawesome.com/icons/palette */ }
+.toolbar button.format-o::before { content: "\f87d"; /* http://fontawesome.io/icon/remove-format/ */ }
+#form #format::before { content: "\f031"; /* https://fontawesome.io/icons/font/ */ }
+
 #viewport .lt::before { content: "\f0c9"; /* http://fontawesome.io/icon/bars/ */ }
 #viewport .rt::before { content: "\f0c0"; /* https://fontawesome.com/icons/users?style=solid */ }
 #chat button.menu::before { content: "\f142"; /* http://fontawesome.io/icon/ellipsis-v/ */ }
 #chat button.mentions::before { content: "\f1fa"; /* https://fontawesome.com/icons/at?style=solid */ }
+#chat button.search::before { content: "\f002"; /* https://fontawesome.com/icons/search?style=solid */ }
 
 .context-menu-join::before { content: "\f067"; /* http://fontawesome.io/icon/plus/ */ }
 .context-menu-user::before { content: "\f007"; /* http://fontawesome.io/icon/user/ */ }
@@ -351,11 +366,49 @@ p {
 .context-menu-connect::before { content: "\f0c1"; /* https://fontawesome.com/icons/link?style=solid */ }
 .context-menu-action-whois::before { content: "\f05a"; /* http://fontawesome.io/icon/info-circle/  */ }
 .context-menu-action-kick::before { content: "\f05e"; /* http://fontawesome.io/icon/ban/ */ }
-.context-menu-action-op::before { content: "\f1fa"; /* http://fontawesome.io/icon/at/ */ }
-.context-menu-action-voice::before { content: "\f067"; /* http://fontawesome.io/icon/plus/ */ }
 .context-menu-network::before { content: "\f233"; /* https://fontawesome.com/icons/server?style=solid */ }
 .context-menu-edit::before { content: "\f303"; /* https://fontawesome.com/icons/pencil-alt?style=solid */ }
 .context-menu-clear-history::before { content: "\f1f8"; /* https://fontawesome.com/icons/trash?style=solid */ }
+
+
+/* Custom actions */
+.context-menu-action-custom-warn::before { content: "\f06a"; /* https://fontawesome.com/icons/exclamation-circle?style=solid */ }
+.context-menu-action-custom-kick::before { content: "\f05e"; /* https://fontawesome.com/icons/ban?style=solid */ }
+.context-menu-action-custom-kill::before { content: "\f54c"; /* https://fontawesome.com/icons/skull?style=solid */ }
+
+/* Chanop stuff */
+.context-menu-action-request-op::before { content: "\f1fa"; /* https://fontawesome.com/icons/at?style=solid */ }
+
+/* IRCOP actions */
+.context-menu-action-sa-nick::before { content: "\f4ff"; /* https://fontawesome.com/icons/user-edit?style=solid */ }
+.context-menu-action-sa-punt::before { content: "\f472"; /* https://fontawesome.com/icons/dolly?style=solid */ }
+
+/* Fun stuff */
+.context-menu-action-fun-defenestrate::before { content: "\f52b"; /* https://fontawesome.com/icons/door-open?style=solid */ }
+
+/* Close all pms */
+.context-menu-close-pms::before { content: "\f00d"; /* https://fontawesome.com/icons/times?style=solid */ }
+
+/* Modes */
+.context-menu-action-mode-Y::before { content: "\f12a"; /* https://fontawesome.com/icons/exclamation?style=solid */ }
+.context-menu-action-mode-q::before { content: "\f505"; /* https://fontawesome.com/icons/user-shield?style=solid */ }
+.context-menu-action-mode-a::before { content: "\f4fe"; /* https://fontawesome.com/icons/user-cog?style=solid */ }
+.context-menu-action-mode-o::before { content: "\f1fa"; /* https://fontawesome.com/icons/at?style=solid */ }
+.context-menu-action-mode-h::before { content: "\f541"; /* https://fontawesome.com/icons/percentage?style=solid */ }
+.context-menu-action-mode-v::before { content: "\f067"; /* https://fontawesome.com/icons/plus?style=solid */ }
+
+/* Custom Modes */
+.context-menu-action-mode-mass-voice::before { content: "\f0c0"; /* https://fontawesome.com/icons/users?style=solid */ }
+.context-menu-action-mode-mass-devoice::before { content: "\e073"; /* https://fontawesome.com/icons/users-slash?style=solid */ }
+.context-menu-action-mode-set-m::before { content: "\f4b3"; /* https://fontawesome.com/icons/comment-slash?style=solid */ }
+.context-menu-action-mode-unset-m::before { content: "\f075"; /* https://fontawesome.com/icons/comment?style=solid */ }
+
+/* Uno */
+.context-menu-item.context-menu-Context-Uno-Blue { color: #0074d9; }
+.context-menu-item.context-menu-Context-Uno-Green { color: #2ecc40; }
+.context-menu-item.context-menu-Context-Uno-Red { color: #ff4136; }
+.context-menu-item.context-menu-Context-Uno-Yellow { color: #ffdc00; }
+.card { cursor: pointer; }
 
 .channel-list-item .not-secure-icon::before {
 	content: "\f071"; /* https://fontawesome.com/icons/exclamation-triangle?style=solid */
@@ -574,6 +627,7 @@ p {
 #viewport .lt,
 #viewport .rt,
 #chat button.mentions,
+#chat button.search,
 #chat button.menu {
 	color: #607992;
 	display: flex;
@@ -588,6 +642,7 @@ p {
 #viewport .lt::before,
 #viewport .rt::before,
 #chat button.mentions::before,
+#chat button.search::before,
 #chat button.menu::before {
 	width: 36px;
 	line-height: 36px; /* Fix alignment in Microsoft Edge */
@@ -1023,7 +1078,7 @@ textarea.input {
 }
 
 #chat .header {
-	border-bottom: 1px solid #e7e7e7;
+	border-bottom: 1px solid var(--border-color);
 }
 
 .header .title {
@@ -1156,7 +1211,7 @@ textarea.input {
 }
 
 #chat .userlist {
-	border-left: 1px solid #e7e7e7;
+	border-left: 1px solid var(--border-color);
 	width: 180px;
 	display: none;
 	flex-direction: column;
@@ -1277,6 +1332,10 @@ textarea.input {
 	border-top: 1px solid var(--unread-marker-color);
 }
 
+#chat .unread-marker-text {
+	cursor: pointer;
+}
+
 #chat .unread-marker-text::before {
 	content: "New messages";
 	background-color: var(--window-bg-color);
@@ -1379,38 +1438,38 @@ textarea.input {
 	color: #50a656;
 }
 
-#chat.colored-nicks .user.color-1 { color: #107ead; }
-#chat.colored-nicks .user.color-2 { color: #a86500; }
-#chat.colored-nicks .user.color-3 { color: #008a3c; }
-#chat.colored-nicks .user.color-4 { color: #e00096; }
-#chat.colored-nicks .user.color-5 { color: #f0000c; }
-#chat.colored-nicks .user.color-6 { color: #000094; }
-#chat.colored-nicks .user.color-7 { color: #006441; }
-#chat.colored-nicks .user.color-8 { color: #00566e; }
-#chat.colored-nicks .user.color-9 { color: #e6006b; }
-#chat.colored-nicks .user.color-10 { color: #0d8766; }
-#chat.colored-nicks .user.color-11 { color: #006b3b; }
-#chat.colored-nicks .user.color-12 { color: #00857e; }
-#chat.colored-nicks .user.color-13 { color: #00465b; }
-#chat.colored-nicks .user.color-14 { color: #eb005a; }
-#chat.colored-nicks .user.color-15 { color: #e62600; }
-#chat.colored-nicks .user.color-16 { color: #0f8546; }
-#chat.colored-nicks .user.color-17 { color: #e60067; }
-#chat.colored-nicks .user.color-18 { color: #eb002b; }
-#chat.colored-nicks .user.color-19 { color: #eb003f; }
-#chat.colored-nicks .user.color-20 { color: #007a56; }
-#chat.colored-nicks .user.color-21 { color: #095092; }
-#chat.colored-nicks .user.color-22 { color: #000bde; }
-#chat.colored-nicks .user.color-23 { color: #008577; }
-#chat.colored-nicks .user.color-24 { color: #00367d; }
-#chat.colored-nicks .user.color-25 { color: #007e9e; }
-#chat.colored-nicks .user.color-26 { color: #006119; }
-#chat.colored-nicks .user.color-27 { color: #007ea8; }
-#chat.colored-nicks .user.color-28 { color: #3c8500; }
-#chat.colored-nicks .user.color-29 { color: #e6007e; }
-#chat.colored-nicks .user.color-30 { color: #c75300; }
-#chat.colored-nicks .user.color-31 { color: #eb0400; }
-#chat.colored-nicks .user.color-32 { color: #e60082; }
+.colored-nicks .user.color-1 { color: #107ead; }
+.colored-nicks .user.color-2 { color: #a86500; }
+.colored-nicks .user.color-3 { color: #008a3c; }
+.colored-nicks .user.color-4 { color: #e00096; }
+.colored-nicks .user.color-5 { color: #f0000c; }
+.colored-nicks .user.color-6 { color: #000094; }
+.colored-nicks .user.color-7 { color: #006441; }
+.colored-nicks .user.color-8 { color: #00566e; }
+.colored-nicks .user.color-9 { color: #e6006b; }
+.colored-nicks .user.color-10 { color: #0d8766; }
+.colored-nicks .user.color-11 { color: #006b3b; }
+.colored-nicks .user.color-12 { color: #00857e; }
+.colored-nicks .user.color-13 { color: #00465b; }
+.colored-nicks .user.color-14 { color: #eb005a; }
+.colored-nicks .user.color-15 { color: #e62600; }
+.colored-nicks .user.color-16 { color: #0f8546; }
+.colored-nicks .user.color-17 { color: #e60067; }
+.colored-nicks .user.color-18 { color: #eb002b; }
+.colored-nicks .user.color-19 { color: #eb003f; }
+.colored-nicks .user.color-20 { color: #007a56; }
+.colored-nicks .user.color-21 { color: #095092; }
+.colored-nicks .user.color-22 { color: #000bde; }
+.colored-nicks .user.color-23 { color: #008577; }
+.colored-nicks .user.color-24 { color: #00367d; }
+.colored-nicks .user.color-25 { color: #007e9e; }
+.colored-nicks .user.color-26 { color: #006119; }
+.colored-nicks .user.color-27 { color: #007ea8; }
+.colored-nicks .user.color-28 { color: #3c8500; }
+.colored-nicks .user.color-29 { color: #e6007e; }
+.colored-nicks .user.color-30 { color: #c75300; }
+.colored-nicks .user.color-31 { color: #eb0400; }
+.colored-nicks .user.color-32 { color: #e60082; }
 
 #chat .self .content {
 	color: var(--body-color-muted);
@@ -2129,7 +2188,7 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 #form {
 	flex: 0 0 auto;
 	border: 0;
-	border-top: 1px solid #e7e7e7;
+	border-top: 1px solid var(--border-color);
 	border-radius: 0;
 	margin: 0;
 	padding: 6px;
@@ -2188,8 +2247,7 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 	display: none;
 }
 
-#form #upload,
-#form #submit {
+#form .chat-input-button {
 	color: #607992;
 	font-size: 14px;
 	height: 32px;
@@ -2197,8 +2255,7 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 	flex: 0 0 auto;
 }
 
-#form #upload[disabled],
-#form #submit[disabled] {
+#form .chat-input-button[disabled] {
 	opacity: 0.5;
 }
 
@@ -2728,6 +2785,7 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 
 /* Image viewer and drag-and-drop overlay */
 
+#input-dialog-overlay,
 #confirm-dialog-overlay,
 #upload-overlay,
 #image-viewer,
@@ -2740,6 +2798,7 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 	justify-content: center;
 }
 
+#input-dialog-overlay,
 #confirm-dialog-overlay,
 #upload-overlay,
 #image-viewer {
@@ -2756,11 +2815,16 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 	user-select: none;
 }
 
+#input-dialog-overlay.opened,
 #confirm-dialog-overlay.opened,
 #upload-overlay.is-dragover,
 #image-viewer.opened {
 	visibility: visible;
 	opacity: 1;
+}
+
+#input-dialog-overlay {
+	background: rgba(0, 0, 0, 0.4)
 }
 
 #confirm-dialog-overlay,
@@ -2847,3 +2911,109 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 #chat table.channel-list .topic {
 	white-space: pre-wrap;
 }
+
+#form .toolbar-container {
+	position: absolute;
+	top: -70px;
+	left: 0;
+	right: 0;
+	pointer-events: none;
+	display: flex;
+	justify-content: center;
+}
+
+#form .toolbar-container.opened {
+	display: flex;
+}
+
+#form .toolbar-container .toolbar {
+	display: flex;
+	background: var(--body-bg-color);
+	color: var(--button-color);
+	padding: 0 6px;
+	border-radius: 5px;
+	opacity: 0;
+	transition: opacity 0.2s;
+}
+
+#form .toolbar-container.opened .toolbar {
+	pointer-events: all;
+	opacity: 1;
+}
+
+#form .toolbar-container .toolbar button {
+	padding: 10px 14px;
+}
+
+form.message-search {
+	display: flex;
+}
+
+form.message-search .input-wrapper {
+	display: flex;
+}
+
+form.message-search button {
+	display: none !important;
+}
+
+form.message-search input {
+	width: 100%;
+	height: auto !important;
+	margin: 7px 0;
+	border: 0;
+	color: inherit;
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+form.message-search input::placeholder {
+	color: rgba(255, 255, 255, 0.35);
+}
+
+@media (min-width: 480px) {
+	form.message-search input {
+		min-width: 140px;
+		transition: min-width 0.2s;
+	}
+
+	form.message-search input:focus {
+		min-width: 220px;
+	}
+}
+
+@media (max-width: 479px) {
+	form.message-search .input-wrapper {
+		position: absolute;
+		top: 45px;
+		left: 0;
+		right: 0;
+		z-index: 1;
+		height: 0;
+		transition: height 0.2s;
+		overflow: hidden;
+		background: var(--window-bg-color);
+	}
+
+	form.message-search .input-wrapper input {
+		margin: 7px;
+	}
+
+	form.message-search.opened .input-wrapper {
+		height: 50px;
+	}
+
+	form.message-search button {
+		display: flex !important;
+	}
+}
+
+.chat-view[data-type="search-results"] .search-status {
+	display: flex;
+	height: 100%;
+	justify-content: center;
+	align-items: center;
+}
+
+
+#footer .connect {display: none;}
+#footer .active {display: block;}

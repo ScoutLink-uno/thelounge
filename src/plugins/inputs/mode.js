@@ -3,7 +3,21 @@
 const Chan = require("../../models/chan");
 const Msg = require("../../models/msg");
 
-exports.commands = ["mode", "op", "deop", "hop", "dehop", "voice", "devoice"];
+exports.commands = [
+	"mode",
+	"voice",
+	"devoice",
+	"hop",
+	"dehop",
+	"op",
+	"deop",
+	"admin",
+	"deadmin",
+	"owner",
+	"deowner",
+	"operadmin",
+	"deoperadmin",
+];
 
 exports.input = function ({irc, nick}, chan, cmd, args) {
 	if (cmd !== "mode") {
@@ -32,17 +46,34 @@ exports.input = function ({irc, nick}, chan, cmd, args) {
 		}
 
 		const mode = {
-			op: "+o",
-			hop: "+h",
 			voice: "+v",
-			deop: "-o",
-			dehop: "-h",
 			devoice: "-v",
+			hop: "+h",
+			dehop: "-h",
+			op: "+o",
+			deop: "-o",
+			admin: "+a",
+			deadmin: "-a",
+			owner: "+q",
+			deowner: "-q",
+			operadmin: "+Y",
+			deoperadmin: "-Y",
 		}[cmd];
 
+		// Instead of "spamming" one mode message after an other, we want them to me merged so that it'll be displayed as one mode change.
+		var modelist = mode.substring(0, mode.length - 1); // For tidyness
+		var targetlist = [];
+		var modeSymbol = mode.substring(1);
+
 		args.forEach(function (target) {
-			irc.raw("MODE", chan.name, mode, target);
+			if (target !== "") {
+				modelist = modelist + modeSymbol;
+				targetlist = targetlist + target + " ";
+			}
 		});
+
+		// Send one command
+		irc.raw("MODE" + " " + chan.name + " " + modelist + " " + targetlist);
 
 		return;
 	}

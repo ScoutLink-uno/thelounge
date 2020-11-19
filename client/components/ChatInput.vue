@@ -1,5 +1,51 @@
 <template>
 	<form id="form" method="post" action="" @submit.prevent="onSubmit">
+		<div class="toolbar-container" :class="{opened: showToolbar}">
+			<div class="toolbar">
+				<button
+					class="format format-b"
+					type="button"
+					aria-label="Bold"
+					@click="applyFormatting('mod+b')"
+				></button>
+				<button
+					class="format format-u"
+					type="button"
+					aria-label="Underline"
+					@click="applyFormatting('mod+u')"
+				></button>
+				<button
+					class="format format-i"
+					type="button"
+					aria-label="Italic"
+					@click="applyFormatting('mod+i')"
+				></button>
+				<button
+					class="format format-s"
+					type="button"
+					aria-label="Strikethrough"
+					@click="applyFormatting('mod+s')"
+				></button>
+				<button
+					class="format format-m"
+					type="button"
+					aria-label="Monospace"
+					@click="applyFormatting('mod+m')"
+				></button>
+				<button
+					class="format format-k"
+					type="button"
+					aria-label="Color"
+					@click="applyFormatting('mod+k')"
+				></button>
+				<button
+					class="format format-o"
+					type="button"
+					aria-label="Clear formatting"
+					@click="applyFormatting('mod+o')"
+				></button>
+			</div>
+		</div>
 		<span id="upload-progressbar" />
 		<span id="nick">{{ network.nick }}</span>
 		<textarea
@@ -14,6 +60,19 @@
 			@input="setPendingMessage"
 			@keypress.enter.exact.prevent="onSubmit"
 		/>
+		<span
+			id="format-tooltip"
+			class="tooltipped tooltipped-w tooltipped-no-touch"
+			aria-label="Text formatting"
+		>
+			<button
+				id="format"
+				type="button"
+				class="chat-input-button"
+				aria-label="Text formatting"
+				@click="toggleToolbar"
+			/>
+		</span>
 		<span
 			v-if="$store.state.serverConfiguration.fileUpload"
 			id="upload-tooltip"
@@ -32,6 +91,7 @@
 			<button
 				id="upload"
 				type="button"
+				class="chat-input-button"
 				aria-label="Upload file"
 				:disabled="!$store.state.isConnected"
 			/>
@@ -44,6 +104,7 @@
 			<button
 				id="submit"
 				type="submit"
+				class="chat-input-button"
 				aria-label="Send message"
 				:disabled="!$store.state.isConnected"
 			/>
@@ -93,11 +154,18 @@ export default {
 		network: Object,
 		channel: Object,
 	},
+	data() {
+		return {
+			showToolbar: false,
+		};
+	},
 	watch: {
 		"channel.id"() {
 			if (autocompletionRef) {
 				autocompletionRef.hide();
 			}
+
+			this.showToolbar = false;
 		},
 		"channel.pendingMessage"() {
 			this.setInputSize();
@@ -225,10 +293,31 @@ export default {
 				autocompletionRef.hide();
 			}
 
-			this.channel.inputHistoryPosition = 0;
-			this.channel.pendingMessage = "";
-			this.$refs.input.value = "";
-			this.setInputSize();
+			const resetInput = () => {
+				this.channel.inputHistoryPosition = 0;
+				this.channel.pendingMessage = "";
+				this.$refs.input.value = "";
+				this.closeToolbar();
+				this.setInputSize();
+			};
+
+			if (this.$store.state.serverConfiguration.fileUpload) {
+				const lines = 1 + (text.match(/\n/g) || "").length;
+
+				// TODO: Offer a confirmation to user whether they want to upload
+				if (lines > 3 || text.length > 700) {
+					resetInput();
+
+					const file = new File([text], "paste.txt", {
+						type: "text/plain",
+					});
+					upload.triggerUpload([file]);
+
+					return false;
+				}
+			}
+
+			resetInput();
 
 			// Store new message in history if last message isn't already equal
 			if (this.channel.inputHistory[1] !== text) {
@@ -264,6 +353,26 @@ export default {
 		},
 		blurInput() {
 			this.$refs.input.blur();
+		},
+		closeToolbar() {
+			this.showToolbar = false;
+		},
+		toggleToolbar() {
+			this.showToolbar = !this.showToolbar;
+			this.$refs.input.focus();
+		},
+		applyFormatting(key) {
+			const modifier = formattingHotkeys[key];
+
+			wrapCursor(
+				this.$refs.input,
+				modifier,
+				this.$refs.input.selectionStart === this.$refs.input.selectionEnd ? "" : modifier
+			);
+
+			this.closeToolbar();
+			this.$refs.input.focus();
+			return false;
 		},
 	},
 };

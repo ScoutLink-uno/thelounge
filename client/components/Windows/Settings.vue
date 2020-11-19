@@ -17,6 +17,36 @@
 				</label>
 			</div>
 
+			<h2>IRCManager</h2>
+			<div>
+				<label class="opt">
+					<a
+						href="https://ircmanager.twoopy.nl"
+						class="btn"
+						target="_blank"
+						:checked="$store.state.settings.media"
+						type="button"
+						name="IRCManager"
+						>Open IRCManager</a
+					>
+				</label>
+			</div>
+			<div>
+				<h2>
+					IRCOP Mode
+					<span
+						class="tooltipped tooltipped-n tooltipped-no-delay"
+						aria-label="Enables contextmenu's that require ircop permissions to run"
+					>
+						<button class="extra-help" />
+					</span>
+				</h2>
+				<label class="opt">
+					<input :checked="$store.state.settings.ircop" type="checkbox" name="ircop" />
+					Enable IRCOP Mode
+				</label>
+			</div>
+
 			<div v-if="canRegisterProtocol || hasInstallPromptEvent">
 				<h2>Native app</h2>
 				<button

@@ -20,6 +20,9 @@ export const config = normalizeConfig({
 	advanced: {
 		default: false,
 	},
+	ircop: {
+		default: false,
+	},
 	autocomplete: {
 		default: true,
 	},

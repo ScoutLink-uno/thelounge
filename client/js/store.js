@@ -17,7 +17,23 @@ function detectDesktopNotificationState() {
 	return "blocked";
 }
 
-const store = new Vuex.Store({
+let store = null;
+
+const setMessageNetworkChannel = (message) => {
+	const channelAndNetwork = store.getters.findChannelOnNetwork(
+		message.networkUuid,
+		message.channelName
+	);
+
+	if (channelAndNetwork) {
+		message.network = channelAndNetwork.network;
+		message.channel = channelAndNetwork.channel;
+	}
+
+	return message;
+};
+
+store = new Vuex.Store({
 	state: {
 		appLoaded: false,
 		activeChannel: null,
@@ -38,6 +54,8 @@ const store = new Vuex.Store({
 		versionStatus: "loading",
 		versionDataExpired: false,
 		serverHasSettings: false,
+		messageSearchResults: null,
+		messageSearchInProgress: false,
 	},
 	mutations: {
 		appLoaded(state) {
@@ -112,11 +130,50 @@ const store = new Vuex.Store({
 		serverHasSettings(state, value) {
 			state.serverHasSettings = value;
 		},
+		messageSearchInProgress(state, value) {
+			state.messageSearchInProgress = value;
+		},
+		messageSearchResults(state, value) {
+			if (value) {
+				// Set the search results and add networks and channels to messages
+				state.messageSearchResults = {
+					...value,
+					...value.results.map(setMessageNetworkChannel),
+				};
+				return;
+			}
+
+			state.messageSearchResults = value;
+		},
+		addMessageSearchResults(state, value) {
+			// Append the search results and add networks and channels to new messages
+			value.results = [
+				...state.messageSearchResults.results,
+				...value.results.map(setMessageNetworkChannel),
+			];
+
+			state.messageSearchResults = value;
+		},
 	},
 	getters: {
 		findChannelOnCurrentNetwork: (state) => (name) => {
 			name = name.toLowerCase();
 			return state.activeChannel.network.channels.find((c) => c.name.toLowerCase() === name);
+		},
+		findChannelOnNetwork: (state) => (networkUuid, channelName) => {
+			for (const network of state.networks) {
+				if (network.uuid !== networkUuid) {
+					continue;
+				}
+
+				for (const channel of network.channels) {
+					if (channel.name === channelName) {
+						return {network, channel};
+					}
+				}
+			}
+
+			return null;
 		},
 		findChannel: (state) => (id) => {
 			for (const network of state.networks) {

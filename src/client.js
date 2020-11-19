@@ -63,6 +63,7 @@ function Client(manager, name, config = {}) {
 		messageStorage: [],
 		highlightRegex: null,
 		highlightExceptionRegex: null,
+		oper: null,
 	});
 
 	const client = this;
@@ -531,6 +532,11 @@ Client.prototype.clearHistory = function (data) {
 	for (const messageStorage of this.messageStorage) {
 		messageStorage.deleteChannel(target.network, target.chan);
 	}
+};
+
+Client.prototype.search = function (query) {
+	const messageStorage = this.messageStorage.find((s) => s.canProvideMessages());
+	return messageStorage.search(query);
 };
 
 Client.prototype.open = function (socketId, target) {

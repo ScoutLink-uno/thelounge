@@ -8,82 +8,13 @@
 
 			<h2 class="help-version-title">
 				<span>About The Lounge</span>
-				<small>
-					v{{ $store.state.serverConfiguration.version }} (<router-link
-						id="view-changelog"
-						to="/changelog"
-						>release notes</router-link
-					>)
-				</small>
 			</h2>
 
 			<div class="about">
-				<VersionChecker />
-
-				<template v-if="$store.state.serverConfiguration.gitCommit">
-					<p>
-						The Lounge is running from source (<a
-							:href="`https://github.com/thelounge/thelounge/tree/${$store.state.serverConfiguration.gitCommit}`"
-							target="_blank"
-							rel="noopener"
-							>commit <code>{{ $store.state.serverConfiguration.gitCommit }}</code></a
-						>).
-					</p>
-
-					<ul>
-						<li>
-							Compare
-							<a
-								:href="`https://github.com/thelounge/thelounge/compare/${$store.state.serverConfiguration.gitCommit}...master`"
-								target="_blank"
-								rel="noopener"
-								>between
-								<code>{{ $store.state.serverConfiguration.gitCommit }}</code> and
-								<code>master</code></a
-							>
-							to see what you are missing
-						</li>
-						<li>
-							Compare
-							<a
-								:href="`https://github.com/thelounge/thelounge/compare/${$store.state.serverConfiguration.version}...${$store.state.serverConfiguration.gitCommit}`"
-								target="_blank"
-								rel="noopener"
-								>between
-								<code>{{ $store.state.serverConfiguration.version }}</code> and
-								<code>{{ $store.state.serverConfiguration.gitCommit }}</code></a
-							>
-							to see your local changes
-						</li>
-					</ul>
-				</template>
-
 				<p>
-					<a
-						href="https://thelounge.chat/"
-						target="_blank"
-						rel="noopener"
-						class="website-link"
-						>Website</a
-					>
-				</p>
-				<p>
-					<a
-						href="https://thelounge.chat/docs/"
-						target="_blank"
-						rel="noopener"
-						class="documentation-link"
-						>Documentation</a
-					>
-				</p>
-				<p>
-					<a
-						href="https://github.com/thelounge/thelounge/issues/new"
-						target="_blank"
-						rel="noopener"
-						class="report-issue-link"
-						>Report an issue…</a
-					>
+					This version of TheLounge is maintained by GewoonYorick. Report issues to him in
+					#support on Twoopy. Issue reports from this version of TheLounge are not being
+					accepted upstream.
 				</p>
 			</div>
 

@@ -38,7 +38,11 @@
 </template>
 
 <script>
-import {generateUserContextMenu, generateChannelContextMenu} from "../js/helpers/contextMenu.js";
+import {
+	generateUserContextMenu,
+	generateChannelContextMenu,
+	generateUnoWildContextMenu,
+} from "../js/helpers/contextMenu.js";
 import eventbus from "../js/eventbus";
 
 export default {
@@ -62,11 +66,13 @@ export default {
 		eventbus.on("escapekey", this.close);
 		eventbus.on("contextmenu:user", this.openUserContextMenu);
 		eventbus.on("contextmenu:channel", this.openChannelContextMenu);
+		eventbus.on("contextmenu:unowild", this.openUnoWildContextMenu);
 	},
 	destroyed() {
 		eventbus.off("escapekey", this.close);
 		eventbus.off("contextmenu:user", this.openUserContextMenu);
 		eventbus.off("contextmenu:channel", this.openChannelContextMenu);
+		eventbus.off("contextmenu:unowild", this.openUnoWildContextMenu);
 
 		this.close();
 	},
@@ -75,18 +81,25 @@ export default {
 			const items = generateChannelContextMenu(this.$root, data.channel, data.network);
 			this.open(data.event, items);
 		},
+		openUnoWildContextMenu(data) {
+			const items = generateUnoWildContextMenu(this.$root, data.channel, data.card);
+			this.open(data.event, items);
+		},
 		openUserContextMenu(data) {
-			const {network, channel} = this.$store.state.activeChannel;
+			const activeChannel = this.$store.state.activeChannel;
+			// If there's an active network and channel use them
+			let {network, channel} = activeChannel ? activeChannel : {network: null, channel: null};
 
-			const items = generateUserContextMenu(
-				this.$root,
-				channel,
-				network,
-				channel.users.find((u) => u.nick === data.user.nick) || {
-					nick: data.user.nick,
-					modes: [],
-				}
-			);
+			// Use network and channel from event if specified
+			network = data.network ? data.network : network;
+			channel = data.channel ? data.channel : channel;
+
+			const defaultUser = {nick: data.user.nick};
+			let user = channel ? channel.users.find((u) => u.nick === data.user.nick) : defaultUser;
+			user = user ? user : defaultUser;
+
+			const items = generateUserContextMenu(this.$root, channel, network, user);
+
 			this.open(data.event, items);
 		},
 		open(event, items) {

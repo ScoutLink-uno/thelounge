@@ -5,7 +5,12 @@
 		@click="containerClick"
 		@contextmenu="containerClick"
 	>
-		<div class="mentions-popup">
+		<div
+			:class="{
+				'mentions-popup': true,
+				'colored-nicks': $store.state.settings.coloredNicks,
+			}"
+		>
 			<div class="mentions-popup-title">
 				Recent mentions
 				<button
@@ -25,7 +30,9 @@
 					<div class="mentions-info">
 						<div>
 							<span class="from">
-								<Username :user="message.from" />
+								<button>
+									<Username :user="message.from" />
+								</button>
 								<template v-if="message.channel">
 									in {{ message.channel.channel.name }} on
 									{{ message.channel.network.name }}
@@ -66,6 +73,8 @@
 	width: 400px;
 	right: 80px;
 	top: 55px;
+	max-height: 800px;
+	overflow-y: scroll;
 	max-height: 400px;
 	overflow-y: auto;
 	z-index: 2;
@@ -77,6 +86,7 @@
 	justify-content: space-between;
 	margin-bottom: 10px;
 	font-size: 20px;
+	align-items: baseline;
 }
 
 .mentions-popup .mentions-info {
@@ -85,8 +95,10 @@
 }
 
 .mentions-popup .msg {
-	margin-bottom: 15px;
+	margin-bottom: 10px;
 	user-select: text;
+	border-top: 1px solid var(--border-color);
+	padding-top: 10px;
 }
 
 .mentions-popup .msg:last-child {
@@ -190,6 +202,11 @@ export default {
 	methods: {
 		messageTime(time) {
 			return dayjs(time).fromNow();
+		},
+		removeMentions() {
+			for (let i = this.$store.state.mentions.length - 1; i >= 0; i--) {
+				this.hideMention(this.$store.state.mentions[i]);
+			}
 		},
 		hideMention(message) {
 			this.$store.state.mentions.splice(
