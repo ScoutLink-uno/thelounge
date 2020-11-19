@@ -162,7 +162,7 @@ export function generateChannelContextMenu($root, channel, network) {
 			}
 		);
 
-		if (currentChannelUser.mode === "@" || store.state.settings.ircop) {
+		if (currentChannelUser.modes.includes("@") || store.state.settings.ircop) {
 			items.push(
 				{
 					label: "Give all users voice",
@@ -171,9 +171,7 @@ export function generateChannelContextMenu($root, channel, network) {
 					action() {
 						let userlist = "";
 						channel.users.forEach(function (user) {
-							if (user.mode === "") {
-								userlist = userlist + user.nick + " ";
-							}
+							userlist = userlist + user.nick + " ";
 						});
 						socket.emit("input", {
 							target: channel.id,
@@ -188,7 +186,7 @@ export function generateChannelContextMenu($root, channel, network) {
 					action() {
 						let userlist = "";
 						channel.users.forEach(function (user) {
-							if (user.mode === "+") {
+							if (user.modes.includes("+")) {
 								userlist = userlist + user.nick + " ";
 							}
 						});
@@ -289,9 +287,8 @@ export function generateChannelContextMenu($root, channel, network) {
 }
 
 export function generateUserContextMenu($root, channel, network, user) {
-	const currentChannelUser = channel
-		? channel.users.find((u) => u.nick === network.nick) || {}
-		: {};
+	const currentChannelUser = channel.users.find((u) => u.nick === network.nick) || {};
+	const currentChannelModes = currentChannelUser.modes || [];
 
 	const whois = () => {
 		const chan = network.channels.find((c) => c.name === user.nick);
@@ -380,7 +377,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 	}
 
 	if (
-		(user.nick !== "ChanServ" && currentChannelUser.mode === "@") ||
+		(user.nick !== "ChanServ" && currentChannelUser.modes.includes("@")) ||
 		(user.nick !== "ChanServ" && store.state.settings.ircop)
 	) {
 		items.push({
@@ -571,7 +568,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 	}
 
 	if (
-		(user.nick !== "ChanServ" && currentChannelUser.mode === "@") ||
+		(user.nick !== "ChanServ" && currentChannelUser.modes.includes("@")) ||
 		(user.nick !== "ChanServ" && store.state.settings.ircop)
 	) {
 		items.push({
@@ -579,7 +576,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 		});
 
 		if (store.state.settings.ircop) {
-			if (user.mode === "!") {
+			if (user.modes.includes("!")) {
 				items.push({
 					label: "Revoke operAdmin (-Y)",
 					type: "item",
@@ -605,7 +602,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 				});
 			}
 
-			if (user.mode === "~") {
+			if (user.modes.includes("~")) {
 				items.push({
 					label: "Revoke owner (-q)",
 					type: "item",
@@ -631,7 +628,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 				});
 			}
 
-			if (user.mode === "&") {
+			if (user.modes.includes("&")) {
 				items.push({
 					label: "Revoke admin (-a)",
 					type: "item",
@@ -658,7 +655,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 			}
 		}
 
-		if (user.mode === "@") {
+		if (user.modes.includes("@")) {
 			items.push({
 				label: "Revoke operator (-o)",
 				type: "item",
@@ -684,7 +681,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 			});
 		}
 
-		if (user.mode === "%") {
+		if (user.modes.includes("%")) {
 			items.push({
 				label: "Revoke halfop (-h)",
 				type: "item",
@@ -710,7 +707,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 			});
 		}
 
-		if (user.mode === "+") {
+		if (user.modes.includes("+")) {
 			items.push({
 				label: "Revoke voice (-v)",
 				type: "item",

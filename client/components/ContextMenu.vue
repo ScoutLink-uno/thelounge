@@ -99,6 +99,7 @@ export default {
 			user = user ? user : defaultUser;
 
 			const items = generateUserContextMenu(this.$root, channel, network, user);
+
 			this.open(data.event, items);
 		},
 		open(event, items) {

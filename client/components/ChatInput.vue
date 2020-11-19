@@ -53,6 +53,7 @@
 			ref="input"
 			dir="auto"
 			class="mousetrap"
+			enterkeyhint="send"
 			:value="channel.pendingMessage"
 			:placeholder="getInputPlaceholder(channel)"
 			:aria-label="getInputPlaceholder(channel)"
@@ -83,6 +84,7 @@
 				id="upload-input"
 				ref="uploadInput"
 				type="file"
+				aria-labelledby="upload"
 				multiple
 				@change="onUploadInputChange"
 			/>

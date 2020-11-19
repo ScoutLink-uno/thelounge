@@ -198,8 +198,7 @@ Network.prototype.setIrcFrameworkOptions = function (client) {
 	this.irc.options.tls = this.tls;
 	this.irc.options.rejectUnauthorized = this.rejectUnauthorized;
 	this.irc.options.webirc = this.createWebIrc(client);
-
-	this.irc.options.client_certificate = this.tls ? ClientCertificate.get(this.uuid) : null;
+	this.irc.options.client_certificate = null;
 
 	if (!this.sasl) {
 		delete this.irc.options.sasl_mechanism;
@@ -207,6 +206,7 @@ Network.prototype.setIrcFrameworkOptions = function (client) {
 	} else if (this.sasl === "external") {
 		this.irc.options.sasl_mechanism = "EXTERNAL";
 		this.irc.options.account = {};
+		this.irc.options.client_certificate = ClientCertificate.get(this.uuid);
 	} else if (this.sasl === "plain") {
 		delete this.irc.options.sasl_mechanism;
 		this.irc.options.account = {
@@ -247,6 +247,7 @@ Network.prototype.createWebIrc = function (client) {
 };
 
 Network.prototype.edit = function (client, args) {
+	const oldNetworkName = this.name;
 	const oldNick = this.nick;
 	const oldRealname = this.realname;
 
@@ -272,6 +273,14 @@ Network.prototype.edit = function (client, args) {
 
 	// Sync lobby channel name
 	this.channels[0].name = this.name;
+
+	if (this.name !== oldNetworkName) {
+		// Send updated network name to all connected clients
+		client.emit("network:name", {
+			uuid: this.uuid,
+			name: this.name,
+		});
+	}
 
 	if (!this.validate(client)) {
 		return;

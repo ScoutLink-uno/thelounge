@@ -1,5 +1,5 @@
 <template>
-	<div id="chat-container" class="window" :data-current-channel="channel.name">
+	<div id="chat-container" class="window" :data-current-channel="channel.name" lang="">
 		<div
 			id="chat"
 			:class="{
@@ -25,6 +25,7 @@
 							:value="channel.topic"
 							class="topic-input"
 							placeholder="Set channel topic"
+							enterkeyhint="done"
 							@keyup.enter="saveTopic"
 							@keyup.esc="channel.editTopic = false"
 						/>

@@ -49,7 +49,7 @@
 					:message="message"
 					:keep-scroll-position="keepScrollPosition"
 					:is-previous-source="isPreviousSource(message, id)"
-					@linkPreviewToggle="onLinkPreviewToggle"
+					@toggle-link-preview="onLinkPreviewToggle"
 				/>
 			</template>
 		</div>
