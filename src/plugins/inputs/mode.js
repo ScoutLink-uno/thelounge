@@ -68,12 +68,12 @@ exports.input = function ({irc, nick}, chan, cmd, args) {
 		args.forEach(function (target) {
 			if (target !== "") {
 				modelist = modelist + modeSymbol;
-				targetlist = targetlist + target + " ";
+				targetlist = targetlist + " " + target;
 			}
 		});
 
 		// Send one command
-		irc.raw("MODE" + " " + chan.name + " " + modelist + " " + targetlist);
+		irc.raw("MODE" + " " + chan.name + " " + modelist + targetlist);
 
 		return;
 	}
