@@ -5,7 +5,7 @@ const Msg = require("../../models/msg");
 exports.commands = ["quit"];
 exports.allowDisconnected = true;
 
-exports.input = function (chan) {
+exports.input = function (network, chan) {
 	chan.pushMessage(
 		this,
 		new Msg({
