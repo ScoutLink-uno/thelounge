@@ -1183,6 +1183,16 @@ textarea.input {
 	visibility: hidden;
 }
 
+#chat .mode-badge {
+	display: none;
+	color: #999;
+	border: 1px solid #999;
+	border-radius: 5px;
+	font-size: 0.75em;
+	padding: 0 6px;
+	margin-left: 5px;
+}
+
 #form,
 .messages .msg,
 .userlist {
