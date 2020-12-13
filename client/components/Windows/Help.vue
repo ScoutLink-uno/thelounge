@@ -665,13 +665,11 @@
 
 <script>
 import SidebarToggle from "../SidebarToggle.vue";
-import VersionChecker from "../VersionChecker.vue";
 
 export default {
 	name: "Help",
 	components: {
 		SidebarToggle,
-		VersionChecker,
 	},
 	data() {
 		return {

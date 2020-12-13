@@ -13,7 +13,6 @@ import LinkPreviewFileSize from "../../components/LinkPreviewFileSize.vue";
 import InlineChannel from "../../components/InlineChannel.vue";
 import Card from "../../components/Card.vue";
 import Username from "../../components/Username.vue";
-import {clean} from "semver";
 
 const emojiModifiersRegex = /[\u{1f3fb}-\u{1f3ff}]|\u{fe0f}/gu;
 
@@ -216,6 +215,7 @@ function parse(createElement, text, message = undefined, network = undefined) {
 				fragments
 			);
 		}
+
 		return fragments;
 	});
 }

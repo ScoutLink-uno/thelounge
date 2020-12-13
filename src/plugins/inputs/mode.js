@@ -61,9 +61,9 @@ exports.input = function ({irc, nick}, chan, cmd, args) {
 		}[cmd];
 
 		// Instead of "spamming" one mode message after an other, we want them to me merged so that it'll be displayed as one mode change.
-		var modelist = mode.substring(0, mode.length - 1); // For tidyness
-		var targetlist = [];
-		var modeSymbol = mode.substring(1);
+		let modelist = mode.substring(0, mode.length - 1); // For tidyness
+		let targetlist = [];
+		const modeSymbol = mode.substring(1);
 
 		args.forEach(function (target) {
 			if (target !== "") {

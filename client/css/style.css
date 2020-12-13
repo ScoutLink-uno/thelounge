@@ -348,7 +348,6 @@ p {
 .toolbar button.format-s::before { content: "\f0cc"; /* http://fontawesome.io/icon/strikethrough/ */ }
 .toolbar button.format-m::before { content: "\f121"; /* http://fontawesome.io/icon/code/ */ }
 .toolbar button.format-k::before { content: "\f53f"; /* https://fontawesome.com/icons/palette */ }
-.toolbar button.format-k::before { content: "\f53f"; /* https://fontawesome.com/icons/palette */ }
 .toolbar button.format-o::before { content: "\f87d"; /* http://fontawesome.io/icon/remove-format/ */ }
 #form #format::before { content: "\f031"; /* https://fontawesome.io/icons/font/ */ }
 
@@ -370,7 +369,6 @@ p {
 .context-menu-network::before { content: "\f233"; /* https://fontawesome.com/icons/server?style=solid */ }
 .context-menu-edit::before { content: "\f303"; /* https://fontawesome.com/icons/pencil-alt?style=solid */ }
 .context-menu-clear-history::before { content: "\f1f8"; /* https://fontawesome.com/icons/trash?style=solid */ }
-
 
 /* Custom actions */
 .context-menu-action-custom-warn::before { content: "\f06a"; /* https://fontawesome.com/icons/exclamation-circle?style=solid */ }
@@ -2825,7 +2823,7 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 }
 
 #input-dialog-overlay {
-	background: rgba(0, 0, 0, 0.4)
+	background: rgba(0, 0, 0, 0.4);
 }
 
 #confirm-dialog-overlay,
@@ -3015,6 +3013,5 @@ form.message-search input::placeholder {
 	align-items: center;
 }
 
-
-#footer .connect {display: none;}
-#footer .active {display: block;}
+#footer .connect { display: none; }
+#footer .active { display: block; }

@@ -12,9 +12,9 @@
 					@submit.prevent="onSubmit"
 				>
 					<textarea
-						class="input inputDialogBox"
 						id="ReasonData"
 						ref="ReasonData"
+						class="input inputDialogBox"
 						:placeholder="data.placeholder"
 						type="text"
 						:value="reason"
@@ -85,7 +85,7 @@
 import eventbus from "../js/eventbus";
 
 export default {
-	name: "inputDialog",
+	name: "InputDialog",
 	data() {
 		return {
 			data: null,
