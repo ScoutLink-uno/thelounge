@@ -255,8 +255,9 @@ Made by Yorick
 }
 
 /* Hide the close channel cross in the channel list */
-.channel-list-item.active .close {
-	display: none;
+.channel-list-item.active .close,
+.channel-list-item:hover .close {
+	display: none !important;
 }
 
 /* Selected item colour */
