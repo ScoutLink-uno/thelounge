@@ -46,15 +46,17 @@
 					<span class="only-copy">&lt;</span>
 					<Username :user="message.from" :network="network" :channel="channel" />
 					<span class="only-copy">&gt; </span>
-					<span class="mode-badge">
-						<template v-if="message.from.mode === '!'"> Oper </template>
-						<template v-if="message.from.mode === '~'"> Owner </template>
-						<template v-if="message.from.mode === '&'"> Administrator </template>
-						<template v-if="message.from.mode === '@'"> Operator </template>
-						<template v-if="message.from.mode === '%'"> Half-Operator </template>
-						<template v-if="message.from.mode === '+'"> Voiced </template>
-						<template v-if="message.from.mode === '-'"> Half-Voiced </template>
-					</span>
+					<template v-if="message.from.mode !== ''">
+						<span class="mode-badge">
+							<template v-if="message.from.mode === '!'"> Oper </template>
+							<template v-if="message.from.mode === '~'"> Owner </template>
+							<template v-if="message.from.mode === '&'"> Administrator </template>
+							<template v-if="message.from.mode === '@'"> Operator </template>
+							<template v-if="message.from.mode === '%'"> Half-Operator </template>
+							<template v-if="message.from.mode === '+'"> Voiced </template>
+							<template v-if="message.from.mode === '-'"> Half-Voiced </template>
+						</span>
+					</template>
 				</template>
 			</span>
 			<span v-else-if="message.type === 'plugin'" class="from">
