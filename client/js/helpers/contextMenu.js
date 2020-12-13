@@ -162,7 +162,7 @@ export function generateChannelContextMenu($root, channel, network) {
 			}
 		);
 
-		if (currentChannelUser.modes.includes("@") || store.state.settings.ircop) {
+		if (currentChannelUser.mode === "@" || store.state.settings.ircop) {
 			items.push(
 				{
 					label: "Give all users voice",
@@ -171,7 +171,9 @@ export function generateChannelContextMenu($root, channel, network) {
 					action() {
 						let userlist = "";
 						channel.users.forEach(function (user) {
-							userlist = userlist + user.nick + " ";
+							if (user.mode === "") {
+								userlist = userlist + user.nick + " ";
+							}
 						});
 						socket.emit("input", {
 							target: channel.id,
@@ -186,7 +188,7 @@ export function generateChannelContextMenu($root, channel, network) {
 					action() {
 						let userlist = "";
 						channel.users.forEach(function (user) {
-							if (user.modes.includes("+")) {
+							if (user.mode === "+") {
 								userlist = userlist + user.nick + " ";
 							}
 						});
@@ -230,31 +232,18 @@ export function generateChannelContextMenu($root, channel, network) {
 
 	// Add menu items for queries
 	if (channel.type === "query") {
-		items.push(
-			{
-				label: "User information",
-				type: "item",
-				class: "action-whois",
-				action() {
-					$root.switchToChannel(channel);
-					socket.emit("input", {
-						target: channel.id,
-						text: "/whois " + channel.name,
-					});
-				},
+		items.push({
+			label: "User information",
+			type: "item",
+			class: "action-whois",
+			action() {
+				$root.switchToChannel(channel);
+				socket.emit("input", {
+					target: channel.id,
+					text: "/whois " + channel.name,
+				});
 			},
-			{
-				label: "Ignore user",
-				type: "item",
-				class: "action-ignore",
-				action() {
-					socket.emit("input", {
-						target: channel.id,
-						text: "/ignore " + channel.name,
-					});
-				},
-			}
-		);
+		});
 	}
 
 	if (channel.type === "channel" || channel.type === "query") {
@@ -300,8 +289,9 @@ export function generateChannelContextMenu($root, channel, network) {
 }
 
 export function generateUserContextMenu($root, channel, network, user) {
-	const currentChannelUser = channel.users.find((u) => u.nick === network.nick) || {};
-	const currentChannelModes = currentChannelUser.modes || [];
+	const currentChannelUser = channel
+		? channel.users.find((u) => u.nick === network.nick) || {}
+		: {};
 
 	const whois = () => {
 		const chan = network.channels.find((c) => c.name === user.nick);
@@ -331,17 +321,6 @@ export function generateUserContextMenu($root, channel, network, user) {
 			type: "item",
 			class: "action-whois",
 			action: whois,
-		},
-		{
-			label: "Ignore user",
-			type: "item",
-			class: "action-ignore",
-			action() {
-				socket.emit("input", {
-					target: channel.id,
-					text: "/ignore " + user.nick,
-				});
-			},
 		},
 		{
 			label: "Direct messages",
@@ -401,7 +380,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 	}
 
 	if (
-		(user.nick !== "ChanServ" && currentChannelUser.modes.includes("@")) ||
+		(user.nick !== "ChanServ" && currentChannelUser.mode === "@") ||
 		(user.nick !== "ChanServ" && store.state.settings.ircop)
 	) {
 		items.push({
@@ -592,7 +571,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 	}
 
 	if (
-		(user.nick !== "ChanServ" && currentChannelUser.modes.includes("@")) ||
+		(user.nick !== "ChanServ" && currentChannelUser.mode === "@") ||
 		(user.nick !== "ChanServ" && store.state.settings.ircop)
 	) {
 		items.push({
@@ -600,7 +579,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 		});
 
 		if (store.state.settings.ircop) {
-			if (user.modes.includes("!")) {
+			if (user.mode === "!") {
 				items.push({
 					label: "Revoke operAdmin (-Y)",
 					type: "item",
@@ -626,7 +605,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 				});
 			}
 
-			if (user.modes.includes("~")) {
+			if (user.mode === "~") {
 				items.push({
 					label: "Revoke owner (-q)",
 					type: "item",
@@ -652,7 +631,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 				});
 			}
 
-			if (user.modes.includes("&")) {
+			if (user.mode === "&") {
 				items.push({
 					label: "Revoke admin (-a)",
 					type: "item",
@@ -679,7 +658,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 			}
 		}
 
-		if (user.modes.includes("@")) {
+		if (user.mode === "@") {
 			items.push({
 				label: "Revoke operator (-o)",
 				type: "item",
@@ -705,7 +684,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 			});
 		}
 
-		if (user.modes.includes("%")) {
+		if (user.mode === "%") {
 			items.push({
 				label: "Revoke halfop (-h)",
 				type: "item",
@@ -731,7 +710,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 			});
 		}
 
-		if (user.modes.includes("+")) {
+		if (user.mode === "+") {
 			items.push({
 				label: "Revoke voice (-v)",
 				type: "item",
