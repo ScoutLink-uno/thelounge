@@ -162,7 +162,7 @@ export function generateChannelContextMenu($root, channel, network) {
 			}
 		);
 
-		if (currentChannelUser.mode === "@" || store.state.settings.ircop) {
+		if (currentChannelUser.modes.includes("@") || store.state.settings.ircop) {
 			items.push(
 				{
 					label: "Give all users voice",
@@ -171,7 +171,7 @@ export function generateChannelContextMenu($root, channel, network) {
 					action() {
 						let userlist = "";
 						channel.users.forEach(function (user) {
-							if (user.mode === "") {
+							if (user.nick !== "ChanServ") {
 								userlist = userlist + user.nick + " ";
 							}
 						});
@@ -188,7 +188,7 @@ export function generateChannelContextMenu($root, channel, network) {
 					action() {
 						let userlist = "";
 						channel.users.forEach(function (user) {
-							if (user.mode === "+") {
+							if (user.nick !== "ChanServ") {
 								userlist = userlist + user.nick + " ";
 							}
 						});
@@ -365,95 +365,61 @@ export function generateUserContextMenu($root, channel, network, user) {
 		},
 	];
 
-	if (user.nick !== "ChanServ") {
-		items.push(
-			{
-				type: "divider",
-			},
-			{
-				label: "Custom Warn",
-				type: "item",
-				class: "action-custom-warn",
-				action() {
-					eventbus.emit(
-						"input-dialog",
-						{
-							title: "Warn Reason",
-							text: `Please give your reason to warn ${user.nick}.`,
-							placeholder: `Reason to warn ${user.nick}...`,
-							button: `Warn ${user.nick}`,
-						},
-						(result) => {
-							if (!result) {
-								return;
-							}
-
-							socket.emit("input", {
-								target: channel.id,
-								text:
-									user.nick +
-									": " +
-									result +
-									" - See scoutlink.net/rules for more information.",
-							});
-						}
-					);
+	if (user.modes !== undefined) {
+		if (user.nick !== "ChanServ") {
+			items.push(
+				{
+					type: "divider",
 				},
-			}
-		);
-	}
+				{
+					label: "Custom Warn",
+					type: "item",
+					class: "action-custom-warn",
+					action() {
+						eventbus.emit(
+							"input-dialog",
+							{
+								title: "Warn Reason",
+								text: `Please give your reason to warn ${user.nick}.`,
+								placeholder: `Reason to warn ${user.nick}...`,
+								button: `Warn ${user.nick}`,
+							},
+							(result) => {
+								if (!result) {
+									return;
+								}
 
-	if (
-		(user.nick !== "ChanServ" && currentChannelUser.mode === "@") ||
-		(user.nick !== "ChanServ" && store.state.settings.ircop)
-	) {
-		items.push({
-			label: "Custom Kick",
-			type: "item",
-			class: "action-custom-kick",
-			action() {
-				eventbus.emit(
-					"input-dialog",
-					{
-						title: "Kick Reason",
-						text: `Please give your reason to kick ${user.nick} from ${channel.name}.`,
-						placeholder: `Reason to kick ${user.nick} from ${channel.name}...`,
-						button: `Kick ${user.nick}`,
+								socket.emit("input", {
+									target: channel.id,
+									text:
+										user.nick +
+										": " +
+										result +
+										" - See scoutlink.net/rules for more information.",
+								});
+							}
+						);
 					},
-					(result) => {
-						if (!result) {
-							return;
-						}
+				}
+			);
+		}
 
-						socket.emit("input", {
-							target: channel.id,
-							text:
-								"/kick " +
-								user.nick +
-								" " +
-								result +
-								" - See scoutlink.net/rules for more information.",
-						});
-					}
-				);
-			},
-		});
-	}
-
-	if (store.state.settings.ircop && user.nick !== "ChanServ") {
-		items.push(
-			{
-				label: "Custom Kill",
+		if (
+			(user.nick !== "ChanServ" && currentChannelUser.modes.includes("@")) ||
+			(user.nick !== "ChanServ" && store.state.settings.ircop)
+		) {
+			items.push({
+				label: "Custom Kick",
 				type: "item",
-				class: "action-custom-kill",
+				class: "action-custom-kick",
 				action() {
 					eventbus.emit(
 						"input-dialog",
 						{
-							title: "Kill Reason",
-							text: `Please give your reason to kill ${user.nick}.`,
-							placeholder: `Reason to kill ${user.nick}...`,
-							button: `Kill ${user.nick}`,
+							title: "Kick Reason",
+							text: `Please give your reason to kick ${user.nick} from ${channel.name}.`,
+							placeholder: `Reason to kick ${user.nick} from ${channel.name}...`,
+							button: `Kick ${user.nick}`,
 						},
 						(result) => {
 							if (!result) {
@@ -463,7 +429,7 @@ export function generateUserContextMenu($root, channel, network, user) {
 							socket.emit("input", {
 								target: channel.id,
 								text:
-									"/kill " +
+									"/kick " +
 									user.nick +
 									" " +
 									result +
@@ -472,293 +438,346 @@ export function generateUserContextMenu($root, channel, network, user) {
 						}
 					);
 				},
-			},
+			});
+		}
+
+		if (store.state.settings.ircop && user.nick !== "ChanServ") {
+			items.push(
+				{
+					label: "Custom Kill",
+					type: "item",
+					class: "action-custom-kill",
+					action() {
+						eventbus.emit(
+							"input-dialog",
+							{
+								title: "Kill Reason",
+								text: `Please give your reason to kill ${user.nick}.`,
+								placeholder: `Reason to kill ${user.nick}...`,
+								button: `Kill ${user.nick}`,
+							},
+							(result) => {
+								if (!result) {
+									return;
+								}
+
+								socket.emit("input", {
+									target: channel.id,
+									text:
+										"/kill " +
+										user.nick +
+										" " +
+										result +
+										" - See scoutlink.net/rules for more information.",
+								});
+							}
+						);
+					},
+				},
+				{
+					type: "divider",
+				},
+				{
+					label: "Change nickname",
+					type: "item",
+					class: "action-sa-nick",
+					action() {
+						eventbus.emit(
+							"input-dialog",
+							{
+								title: `Change ${user.nick}'s nickname`,
+								text: `What do you want to change ${user.nick} nickname to?`,
+								placeholder: `New nickname for ${user.nick}...`,
+								button: `sanick ${user.nick}`,
+							},
+							(result) => {
+								if (!result) {
+									return;
+								}
+
+								socket.emit("input", {
+									target: channel.id,
+									text: `/sanick ${user.nick} ${result}`,
+								});
+							}
+						);
+					},
+				},
+				{
+					label: "Move user",
+					type: "item",
+					class: "action-sa-punt",
+					action() {
+						eventbus.emit(
+							"input-dialog",
+							{
+								title: `Move user ${user.nick}`,
+								text: `What channel do you want to move ${user.nick} to?`,
+								placeholder: `Move ${user.nick} to...`,
+								button: `Move ${user.nick}`,
+							},
+							(result) => {
+								if (!result) {
+									return;
+								}
+
+								// Sapart
+								socket.emit("input", {
+									target: channel.id,
+									text: `/sapart ${user.nick} ${channel.name}`,
+								});
+								// Sajoin
+								socket.emit("input", {
+									target: channel.id,
+									text: `/sajoin ${user.nick} ${result}`,
+								});
+							}
+						);
+					},
+				},
+				{
+					type: "divider",
+				},
+				{
+					label: "Defenstrate",
+					type: "item",
+					class: "action-fun-defenestrate",
+					action() {
+						eventbus.emit(
+							"input-dialog",
+							{
+								title: `Defenestrate user ${user.nick}`,
+								text: `What channel do you want to defenestrates ${user.nick} into?`,
+								placeholder: `Defenestrate ${user.nick} into...`,
+								button: `Defenestrate ${user.nick}`,
+							},
+							(result) => {
+								if (!result) {
+									return;
+								}
+
+								// Action msg
+								socket.emit("input", {
+									target: channel.id,
+									text: `/me defenestrates ${user.nick} straight into ${result}`,
+								});
+								// Sapart
+								socket.emit("input", {
+									target: channel.id,
+									text: `/sapart ${user.nick} ${channel.name}`,
+								});
+								// Sajoin
+								socket.emit("input", {
+									target: channel.id,
+									text: `/sajoin ${user.nick} ${result}`,
+								});
+							}
+						);
+					},
+				}
+			);
+		}
+
+		if (user.nick === "ChanServ" && currentChannelUser.mode !== "@") {
+			items.push({
+				type: "divider",
+			});
+			items.push({
+				label: "Request Op (+o)",
+				type: "item",
+				class: "action-request-op",
+				action() {
+					socket.emit("input", {
+						target: channel.id,
+						text: `/msg Chanserv op ${channel.name}`,
+					});
+				},
+			});
+		}
+
+		if (
+			(user.nick !== "ChanServ" && currentChannelUser.modes.includes("@")) ||
+			(user.nick !== "ChanServ" && store.state.settings.ircop)
+		) {
+			items.push({
+				type: "divider",
+			});
+
+			if (store.state.settings.ircop) {
+				if (user.modes.includes("!")) {
+					items.push({
+						label: "Revoke operAdmin (-Y)",
+						type: "item",
+						class: "action-mode-Y",
+						action() {
+							socket.emit("input", {
+								target: channel.id,
+								text: "/deoperadmin " + user.nick,
+							});
+						},
+					});
+				} else {
+					items.push({
+						label: "Give operAdmin (+Y)",
+						type: "item",
+						class: "action-mode-Y",
+						action() {
+							socket.emit("input", {
+								target: channel.id,
+								text: "/operadmin " + user.nick,
+							});
+						},
+					});
+				}
+
+				if (user.modes.includes("~")) {
+					items.push({
+						label: "Revoke owner (-q)",
+						type: "item",
+						class: "action-mode-q",
+						action() {
+							socket.emit("input", {
+								target: channel.id,
+								text: "/deowner " + user.nick,
+							});
+						},
+					});
+				} else {
+					items.push({
+						label: "Give owner (+q)",
+						type: "item",
+						class: "action-mode-q",
+						action() {
+							socket.emit("input", {
+								target: channel.id,
+								text: "/owner " + user.nick,
+							});
+						},
+					});
+				}
+
+				if (user.modes.includes("&")) {
+					items.push({
+						label: "Revoke admin (-a)",
+						type: "item",
+						class: "action-mode-a",
+						action() {
+							socket.emit("input", {
+								target: channel.id,
+								text: "/deadmin " + user.nick,
+							});
+						},
+					});
+				} else {
+					items.push({
+						label: "Give admin (+a)",
+						type: "item",
+						class: "action-mode-a",
+						action() {
+							socket.emit("input", {
+								target: channel.id,
+								text: "/admin " + user.nick,
+							});
+						},
+					});
+				}
+			}
+
+			if (user.modes.includes("@")) {
+				items.push({
+					label: "Revoke operator (-o)",
+					type: "item",
+					class: "action-mode-o",
+					action() {
+						socket.emit("input", {
+							target: channel.id,
+							text: "/deop " + user.nick,
+						});
+					},
+				});
+			} else {
+				items.push({
+					label: "Give operator (+o)",
+					type: "item",
+					class: "action-mode-o",
+					action() {
+						socket.emit("input", {
+							target: channel.id,
+							text: "/op " + user.nick,
+						});
+					},
+				});
+			}
+
+			if (user.modes.includes("%")) {
+				items.push({
+					label: "Revoke halfop (-h)",
+					type: "item",
+					class: "action-mode-h",
+					action() {
+						socket.emit("input", {
+							target: channel.id,
+							text: "/dehop " + user.nick,
+						});
+					},
+				});
+			} else {
+				items.push({
+					label: "Give halfop (+h)",
+					type: "item",
+					class: "action-mode-h",
+					action() {
+						socket.emit("input", {
+							target: channel.id,
+							text: "/hop " + user.nick,
+						});
+					},
+				});
+			}
+
+			if (user.modes.includes("+")) {
+				items.push({
+					label: "Revoke voice (-v)",
+					type: "item",
+					class: "action-mode-v",
+					action() {
+						socket.emit("input", {
+							target: channel.id,
+							text: "/devoice " + user.nick,
+						});
+					},
+				});
+			} else {
+				items.push({
+					label: "Give voice (+v)",
+					type: "item",
+					class: "action-mode-v",
+					action() {
+						socket.emit("input", {
+							target: channel.id,
+							text: "/voice " + user.nick,
+						});
+					},
+				});
+			}
+		}
+	} else {
+		items.push(
 			{
 				type: "divider",
 			},
 			{
-				label: "Change nickname",
+				label: "User information (whowas)",
 				type: "item",
-				class: "action-sa-nick",
+				class: "action-whois",
 				action() {
-					eventbus.emit(
-						"input-dialog",
-						{
-							title: `Change ${user.nick}'s nickname`,
-							text: `What do you want to change ${user.nick} nickname to?`,
-							placeholder: `New nickname for ${user.nick}...`,
-							button: `sanick ${user.nick}`,
-						},
-						(result) => {
-							if (!result) {
-								return;
-							}
-
-							socket.emit("input", {
-								target: channel.id,
-								text: `/sanick ${user.nick} ${result}`,
-							});
-						}
-					);
-				},
-			},
-			{
-				label: "Move user",
-				type: "item",
-				class: "action-sa-punt",
-				action() {
-					eventbus.emit(
-						"input-dialog",
-						{
-							title: `Move user ${user.nick}`,
-							text: `What channel do you want to move ${user.nick} to?`,
-							placeholder: `Move ${user.nick} to...`,
-							button: `Move ${user.nick}`,
-						},
-						(result) => {
-							if (!result) {
-								return;
-							}
-
-							// Sapart
-							socket.emit("input", {
-								target: channel.id,
-								text: `/sapart ${user.nick} ${channel.name}`,
-							});
-							// Sajoin
-							socket.emit("input", {
-								target: channel.id,
-								text: `/sajoin ${user.nick} ${result}`,
-							});
-						}
-					);
-				},
-			},
-			{
-				type: "divider",
-			},
-			{
-				label: "Defenstrate",
-				type: "item",
-				class: "action-fun-defenestrate",
-				action() {
-					eventbus.emit(
-						"input-dialog",
-						{
-							title: `Defenestrate user ${user.nick}`,
-							text: `What channel do you want to defenestrates ${user.nick} into?`,
-							placeholder: `Defenestrate ${user.nick} into...`,
-							button: `Defenestrate ${user.nick}`,
-						},
-						(result) => {
-							if (!result) {
-								return;
-							}
-
-							// Action msg
-							socket.emit("input", {
-								target: channel.id,
-								text: `/me defenestrates ${user.nick} straight into ${result}`,
-							});
-							// Sapart
-							socket.emit("input", {
-								target: channel.id,
-								text: `/sapart ${user.nick} ${channel.name}`,
-							});
-							// Sajoin
-							socket.emit("input", {
-								target: channel.id,
-								text: `/sajoin ${user.nick} ${result}`,
-							});
-						}
-					);
+					socket.emit("input", {
+						target: channel.id,
+						text: "/whowas " + user.nick,
+					});
 				},
 			}
 		);
-	}
-
-	if (user.nick === "ChanServ" && currentChannelUser.mode !== "@") {
-		items.push({
-			type: "divider",
-		});
-		items.push({
-			label: "Request Op (+o)",
-			type: "item",
-			class: "action-request-op",
-			action() {
-				socket.emit("input", {
-					target: channel.id,
-					text: `/msg Chanserv op ${channel.name}`,
-				});
-			},
-		});
-	}
-
-	if (
-		(user.nick !== "ChanServ" && currentChannelUser.mode === "@") ||
-		(user.nick !== "ChanServ" && store.state.settings.ircop)
-	) {
-		items.push({
-			type: "divider",
-		});
-
-		if (store.state.settings.ircop) {
-			if (user.mode === "!") {
-				items.push({
-					label: "Revoke operAdmin (-Y)",
-					type: "item",
-					class: "action-mode-Y",
-					action() {
-						socket.emit("input", {
-							target: channel.id,
-							text: "/deoperadmin " + user.nick,
-						});
-					},
-				});
-			} else {
-				items.push({
-					label: "Give operAdmin (+Y)",
-					type: "item",
-					class: "action-mode-Y",
-					action() {
-						socket.emit("input", {
-							target: channel.id,
-							text: "/operadmin " + user.nick,
-						});
-					},
-				});
-			}
-
-			if (user.mode === "~") {
-				items.push({
-					label: "Revoke owner (-q)",
-					type: "item",
-					class: "action-mode-q",
-					action() {
-						socket.emit("input", {
-							target: channel.id,
-							text: "/deowner " + user.nick,
-						});
-					},
-				});
-			} else {
-				items.push({
-					label: "Give owner (+q)",
-					type: "item",
-					class: "action-mode-q",
-					action() {
-						socket.emit("input", {
-							target: channel.id,
-							text: "/owner " + user.nick,
-						});
-					},
-				});
-			}
-
-			if (user.mode === "&") {
-				items.push({
-					label: "Revoke admin (-a)",
-					type: "item",
-					class: "action-mode-a",
-					action() {
-						socket.emit("input", {
-							target: channel.id,
-							text: "/deadmin " + user.nick,
-						});
-					},
-				});
-			} else {
-				items.push({
-					label: "Give admin (+a)",
-					type: "item",
-					class: "action-mode-a",
-					action() {
-						socket.emit("input", {
-							target: channel.id,
-							text: "/admin " + user.nick,
-						});
-					},
-				});
-			}
-		}
-
-		if (user.mode === "@") {
-			items.push({
-				label: "Revoke operator (-o)",
-				type: "item",
-				class: "action-mode-o",
-				action() {
-					socket.emit("input", {
-						target: channel.id,
-						text: "/deop " + user.nick,
-					});
-				},
-			});
-		} else {
-			items.push({
-				label: "Give operator (+o)",
-				type: "item",
-				class: "action-mode-o",
-				action() {
-					socket.emit("input", {
-						target: channel.id,
-						text: "/op " + user.nick,
-					});
-				},
-			});
-		}
-
-		if (user.mode === "%") {
-			items.push({
-				label: "Revoke halfop (-h)",
-				type: "item",
-				class: "action-mode-h",
-				action() {
-					socket.emit("input", {
-						target: channel.id,
-						text: "/dehop " + user.nick,
-					});
-				},
-			});
-		} else {
-			items.push({
-				label: "Give halfop (+h)",
-				type: "item",
-				class: "action-mode-h",
-				action() {
-					socket.emit("input", {
-						target: channel.id,
-						text: "/hop " + user.nick,
-					});
-				},
-			});
-		}
-
-		if (user.mode === "+") {
-			items.push({
-				label: "Revoke voice (-v)",
-				type: "item",
-				class: "action-mode-v",
-				action() {
-					socket.emit("input", {
-						target: channel.id,
-						text: "/devoice " + user.nick,
-					});
-				},
-			});
-		} else {
-			items.push({
-				label: "Give voice (+v)",
-				type: "item",
-				class: "action-mode-v",
-				action() {
-					socket.emit("input", {
-						target: channel.id,
-						text: "/voice " + user.nick,
-					});
-				},
-			});
-		}
 	}
 
 	return items;
