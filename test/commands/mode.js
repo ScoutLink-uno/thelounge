@@ -82,9 +82,8 @@ describe("Commands", function () {
 			ModeCommand.input(testableNetwork, channel, "devoice", ["xPaw"]);
 			expect(testableNetwork.lastCommand).to.equal("MODE #thelounge -v xPaw");
 
-			// Multiple arguments are supported, sent as separate commands
 			ModeCommand.input(testableNetwork, channel, "devoice", ["xPaw", "Max-P"]);
-			expect(testableNetwork.lastCommand).to.equal("MODE #thelounge -v Max-P");
+			expect(testableNetwork.lastCommand).to.equal("MODE #thelounge -vv xPaw Max-P");
 		});
 	});
 });
