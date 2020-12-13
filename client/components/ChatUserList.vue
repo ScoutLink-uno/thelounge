@@ -54,12 +54,13 @@ import {filter as fuzzyFilter} from "fuzzy";
 import Username from "./Username.vue";
 
 const modes = {
+	"!": "oper",
 	"~": "owner",
 	"&": "admin",
-	"!": "admin",
 	"@": "op",
 	"%": "half-op",
 	"+": "voice",
+	"-": "half-voice",
 	"": "normal",
 };
 

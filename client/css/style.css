@@ -1783,6 +1783,10 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 	top: 0;
 }
 
+#chat .user-mode.oper::before {
+	content: "Opers";
+}
+
 #chat .user-mode.owner::before {
 	content: "Owners";
 }
@@ -1801,6 +1805,10 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 
 #chat .user-mode.voice::before {
 	content: "Voiced";
+}
+
+#chat .user-mode.half-voice::before {
+	content: "Half-Voiced";
 }
 
 #chat .user-mode.normal::before {
