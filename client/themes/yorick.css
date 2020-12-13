@@ -1,0 +1,649 @@
+/*
+thelounge-theme-yorick
+A dark customizable theme for TheLounge IRC client
+
+Installation instructions can be found at https://thelounge.chat/docs/server/configuration.html#theme
+
+Made by Yorick
+
+*/
+
+/* #region Main colourscheme */
+
+@import 'default.css';
+
+:root {
+	--background-color: #192428;
+	--second-color: #2d383c;
+	--third-color: #414c50;
+	--fourth-color: #0784b5;
+	--fith-color: #39ace7;
+	--text: #d0c0c0;
+	--c-2: #999;
+	--white: #fff;
+	--text-dimmed: #767676;
+
+	/* General stuff */
+	--body-color: var(--text);
+	--date-marker-color: var(--fourth-color);
+	--unread-marker-color: var(--fourth-color);
+	--link-color: var(--fith-color);
+	--highlight-bg-color: var(--fourth-color);
+	--window-bg-color: var(--background-color);
+	--body-bg-color: var(--background-color);
+	--active-bg-color: var(--background-color);
+	--dark-bg-color: var(--background-color);
+
+	/* Main */
+	--main-background: var(--background-color);
+	--h1-color: var(--fith-color);
+	--h2-color: var(--fith-color);
+
+	/* Channel list */
+	--channel-item: var(--text);
+	--channel-item-current: var(--white);
+	--channel-item-current-bg: var(--second-color);
+	--network-name: var(--fith-color);
+	--network-name-disconnected: var(--fith-color);
+
+	/* Nick list */
+	--nick-list-text-count: var(--text-dimmed);
+	--nick-list-text-search: var(--text);
+	--nick-list-text-modes: var(--text-dimmed);
+
+	/* Topic list */
+
+	/* Messages */
+
+	/* Default */
+	--message-text: var(--text);
+	--message-self: var(--fith-color);
+	--message-hover: var(--second-color);
+	--time-normal: var(--c-2);
+
+	/* mentions */
+	--message-mention: var(--fourth-color);
+	--time-mention: var(--white);
+
+	/* Notice */
+	--notice-time: var(--c-2);
+	--notice-message: var(--text);
+
+	/* Buttons */
+	--button-color: var(--fith-color);
+	--button-color-touched: var(--fourth-color);
+	--button-color-arrow: var(--white);
+
+	/* Inputs */
+	--input-nicklist: var(--c-2);
+	--input-global: var(--c-2);
+
+	/* Popups */
+	--pop-up-background: var(--second-color);
+	--pop-up-background-touched: var(--third-color);
+	--pop-up-mention-background: var(--third-color);
+
+	/* topic */
+	--topic-text: var(--text);
+	--topic-line: var(--fourth-color);
+
+	/* Scroll Down Arrow */
+	--scrolldown-button-arrow: var(--white);
+	--scrolldown-button-background: var(--fith-color);
+	--scrolldown-button-arrow-touched: var(--white);
+	--scrolldown-button-background-touched: var(--fourth-color);
+
+	/* Chat Input Buttons */
+	--chat-input-button: var(--fith-color);
+	--chat-input-button-touched: var(--fourth-color);
+
+	/* Chat Input Form */
+	--chat-input-background: var(--second-color);
+	--chat-input-text: var(--text);
+	--chat-input-text-placeholder: var(--text);
+
+	/* Update icon */
+	--footer-update-icon: #5cee3f;
+
+	/* Previews */
+	--preview-bg: var(--second-color);
+	--preview-text: var(--text);
+}
+
+.from .user.color-1,
+.from .user.color-17,
+#chat.colored-nicks .user.color-1,
+#chat.colored-nicks .user.color-17 {
+	color: #ef4657;
+}
+
+.from .user.color-2,
+.from .user.color-18,
+#chat.colored-nicks .user.color-2,
+#chat.colored-nicks .user.color-18 {
+	color: #ff93a4;
+}
+
+.from .user.color-3,
+.from .user.color-19,
+#chat.colored-nicks .user.color-3,
+#chat.colored-nicks .user.color-19 {
+	color: #ffb03b;
+}
+
+.from .user.color-4,
+.from .user.color-20,
+#chat.colored-nicks .user.color-4,
+#chat.colored-nicks .user.color-20 {
+	color: #cc7d08;
+}
+
+.from .user.color-5m,
+.from .user.color-21,
+#chat.colored-nicks .user.color-5,
+#chat.colored-nicks .user.color-21 {
+	color: #ffd34e;
+}
+
+.from .user.color-6,
+.from .user.color-22,
+#chat.colored-nicks .user.color-6,
+#chat.colored-nicks .user.color-22 {
+	color: #cca01b;
+}
+
+.from .user.color-7,
+.from .user.color-23,
+#chat.colored-nicks .user.color-7,
+#chat.colored-nicks .user.color-23 {
+	color: #acf046;
+}
+
+.from .user.color-8,
+.from .user.color-24,
+#chat.colored-nicks .user.color-8,
+#chat.colored-nicks .user.color-24 {
+	color: #d5f572;
+}
+
+.from .user.color-9,
+.from .user.color-25,
+#chat.colored-nicks .user.color-9,
+#chat.colored-nicks .user.color-25 {
+	color: #499e8d;
+}
+
+.from .user.color-10,
+.from .user.color-26,
+#chat.colored-nicks .user.color-10,
+#chat.colored-nicks .user.color-26 {
+	color: #b5ffe1;
+}
+
+.from .user.color-11,
+.from .user.color-27,
+#chat.colored-nicks .user.color-11,
+#chat.colored-nicks .user.color-27 {
+	color: #35a7ff;
+}
+
+.from .user.color-12,
+.from .user.color-28,
+#chat.colored-nicks .user.color-12,
+#chat.colored-nicks .user.color-28 {
+	color: #91a6ff;
+}
+
+.from .user.color-13,
+.from .user.color-29,
+#chat.colored-nicks .user.color-13,
+#chat.colored-nicks .user.color-29 {
+	color: #8a46f0;
+}
+
+.from .user.color-14,
+.from .user.color-30,
+#chat.colored-nicks .user.color-14,
+#chat.colored-nicks .user.color-30 {
+	color: #ff88dc;
+}
+
+.from .user.color-15,
+.from .user.color-31,
+#chat.colored-nicks .user.color-15,
+#chat.colored-nicks .user.color-31 {
+	color: #bd8d46;
+}
+
+.from .user.color-16,
+.from .user.color-32,
+#chat.colored-nicks .user.color-16,
+#chat.colored-nicks .user.color-32 {
+	color: #f0c079;
+}
+
+/* Hide logo */
+.logo-container {
+	display: none;
+}
+
+/* Scroll down button */
+.scroll-down-arrow {
+	color: var(--scrolldown-button-arrow);
+	background-color: var(--scrolldown-button-background);
+}
+
+.scroll-down-arrow:hover {
+	color: var(--scrolldown-button-arrow-touched);
+	background-color: var(---scrolldown-button-background-touched);
+}
+
+/* Sidebars */
+
+/* Channel list */
+
+/* Change size of the sidebar */
+#sidebar {
+	width: 180px;
+}
+
+/* change size of channel list itmes and Change colour of items */
+.channel-list-item {
+	padding: 2px 14px 2px 14px;
+	width: 180px;
+	color: var(--channel-item);
+}
+
+/* Hide the close channel cross in the channel list */
+.channel-list-item.active .close {
+	display: none;
+}
+
+/* Selected item colour */
+.channel-list-item.active,
+.channel-list-item:hover {
+	color: var(--channel-item-current);
+	background-color: var(--channel-item-current-bg);
+}
+
+/* Network name colour */
+.lobby-wrap {
+	color: var(--network-name);
+}
+
+/* Hide insecure item */
+.lobby-wrap .not-secure-icon {
+	display: none;
+}
+
+/* Hide channel and pm icon */
+.channel-list-item::before {
+	display: none;
+}
+
+/* Show draft */
+.channel-list-item.has-draft:not(.active)::after {
+	font: normal normal normal 14px/1 FontAwesome;
+	font-size: inherit;
+	-webkit-font-smoothing: antialiased;
+	content: "\f304";
+	display: block;
+	padding: 3px 3px 3px 6px;
+	color: var(--channel-item);
+}
+
+/* Nick list */
+
+/* Hide chat border between nicklist and chat view and Make the userlist a bit smaller */
+#chat .userlist {
+	border-left: none;
+	width: 150px;
+}
+
+/* Change margin above chat network name in channelist */
+#sidebar .network {
+	margin-bottom: 10px;
+}
+
+/* Remove padding in bottom userlist and after the group of a usermode type */
+#chat .user-mode.admin,
+#chat .user-mode.owner,
+#chat .user-mode.op,
+#chat .user-mode.voice,
+#chat .user-mode.normal,
+#chat .userlist .names {
+	padding-bottom: 0;
+	margin-bottom: 5px;
+}
+
+/* Make the userlist a bit smaller by reducing some padding */
+#chat .user-mode::before,
+#chat .names .user {
+	padding: 0 5px;
+}
+
+/* User Search box colours */
+#chat .userlist .search {
+	color: var(--nick-list-text-search);
+	background-color: var(--main-background);
+}
+
+/* User count colour */
+#chat .userlist .count {
+	color: var(--nick-list-text-count);
+}
+
+/* Conversation layout */
+
+/* Make msg flex for messages type */
+#chat .msg[data-type="message"] {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+/* Make time show at the end of the message and Make the time size a bit smaller to it gets pushes closer to the userlist and Remove padding from time */
+#chat .msg .time {
+	order: 3;
+	display: block;
+	width: 55px;
+	padding: 3px;
+}
+
+/* Make "From" resize by the size instead of a fixed size */
+#chat .from {
+	width: auto;
+	padding-left: 5px;
+	padding-right: 5px;
+	mask-image: none;
+}
+
+/* Hide chat border between sender and text */
+#chat .content {
+	border-left: none;
+	padding-left: 6px;
+}
+
+/* Make space for the time and  Use same format for own messages */
+#chat .msg .content {
+	width: calc(100% - 70px);
+	color: var(--message-text);
+}
+
+/* Hide chat sender if the sender was also the sender of the message directly above */
+#chat .previous-source .from {
+	display: none;
+}
+
+/* For normal chat messages make from 100% with so the message and time jump to the new line */
+#chat .msg[data-type="message"] .from {
+	width: 100%;
+	text-align: unset;
+}
+
+/* Make messages be closer together, especially nice if it's the same sender */
+#chat .msg[data-type="message"] .from,
+#chat .msg[data-type="message"] .time,
+#chat .msg[data-type="message"] .content {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+/* hide From in condenced messages */
+#chat .msg[data-type="condensed"] .condensed-summary .from {
+	display: none;
+}
+
+/* Show mode badge */
+#chat .mode-badge {
+	display: inline-block;
+}
+
+/* Colour message on select/hold */
+#chat .msg:active {
+	background-color: var(--message-hover);
+}
+
+/* Notice formatting */
+
+/* Time */
+#chat .msg[data-type="notice"] .time {
+	color: var(--notice-time);
+}
+
+/* Message */
+#chat .msg[data-type="notice"] .content {
+	color: var(--notice-message);
+}
+
+/* Hide "You have been marked as..." Away and Back Messages */
+#chat .msg.self[data-type="away"],
+#chat .msg.self[data-type="back"] {
+	display: none;
+}
+
+/* Formatting Self and Mention */
+#chat .msg {
+	border-left: 5px solid var(--main-background);
+}
+
+/* Self */
+#chat .chat-view[data-type=channel] .msg.highlight .content {
+	border-left: none;
+}
+
+#chat .chat-view[data-type=channel] .msg.self {
+	background-color: var(--main-background);
+	border-left: 5px solid var(--message-self);
+}
+
+#chat .chat-view[data-type=channel] .msg.highlight {
+	background-color: var(--main-background);
+	border-left: 5px solid red;
+}
+
+/* popup menu */
+
+.context-menu-item,
+.textcomplete-item,
+.textcomplete-item a {
+	color: var(--body-color);
+}
+
+.textcomplete-menu,
+#context-menu {
+	background-color: var(--pop-up-background);
+}
+
+.context-menu-item::before,
+.textcomplete-item::before {
+	color: var(--link-color);
+}
+
+/* Colour chat input and Hide top bar from chat input */
+#form {
+	background-color: var(--chat-input-background);
+	color: var(--chat-input-text);
+	border-top: none;
+}
+
+#form #input::placeholder {
+	color: var(--chat-input-text-placeholder);
+}
+
+/* #region Mention screen */
+
+#mentions-popup-container .mentions-popup {
+	background: var(--pop-up-background);
+}
+
+/* change background on smaller screens as it is a separate window and not a pop up */
+@media (max-width: 768px) { #mentions-popup-container .mentions-popup { background: var(--main-background); } }
+
+.mentions-popup .msg .content {
+	background: var(--pop-up-mention-background);
+}
+
+.mentions-popup-title {
+	color: var(--button-color);
+}
+
+/* Button colours */
+
+#chat .count::before,
+#chat .topic-container .save-topic span::before,
+#sidebar .icon,
+#footer button.active,
+#footer button:hover,
+#sidebar .jump-to-input::before,
+#chat button.mentions,
+#chat button.menu,
+#chat button.search,
+#viewport .lt,
+#viewport .rt {
+	color: var(--button-color);
+}
+
+/* Chat Input Buttons */
+#form .chat-input-button {
+	color: var(--chat-input-button);
+}
+
+#form .chat-input-button:hover {
+	color: var(--chat-input-button-touched);
+}
+
+/* update color */
+#footer .help.notified::after {
+	color: var(--footer-update-icon);
+}
+
+/* hide shadow */
+.window {
+	box-shadow: none;
+}
+
+/* Topic */
+
+/* bottom border / line colour */
+#chat .header {
+	border-bottom-color: var(--topic-line);
+}
+
+/* text */
+#chat .header .topic {
+	color: var(--topic-text);
+}
+
+/* Previews */
+
+/* background */
+#chat .preview .toggle-content {
+	background-color: var(--preview-bg);
+}
+
+/* text */
+#chat .preview .overflowable {
+	color: var(--preview-text);
+}
+
+/* Inputs */
+
+/* background */
+.input {
+	background-color: var(--chat-input-background);
+	color: var(--message-text);
+	border-color: var(--background-color);
+}
+
+input::placeholder {
+	color: var(--text-dimmed);
+}
+
+.input:not(:disabled):focus,
+.input:not(:disabled):hover {
+	border-color: var(--fith-color);
+}
+
+.input:focus {
+	outline: 0;
+	box-shadow: 0 0 0 3px var(--fourth-color);
+}
+
+/* Add the ability to close on hover */
+@media (hover: hover) { #sidebar .channel-list-item:hover .close { display: unset; } }
+
+/* Settings */
+
+/* Headers colour */
+.window h1 {
+	color: var(--h1-color);
+}
+
+/* Headers colour */
+.window h2 {
+	color: var(--h2-color);
+}
+
+/* Custom css box */
+.user-specified-css-input {
+	height: 375px;
+}
+
+/* remove nick padding on mobile */
+@media (min-width: 480px) {
+	#chat .from {
+		padding-left: none;
+	}
+
+	#chat .msg .time {
+		width: 60px;
+		display: block;
+	}
+
+	/* Make space for the time */
+	#chat .msg .content {
+		width: calc(100% - 71px);
+	}
+}
+
+/* fix Time on mobile */
+@media (max-width: 479px) {
+	#chat .msg .time {
+		width: 60px;
+		display: block;
+	}
+
+	/* Make space for the time */
+	#chat .msg .content {
+		width: calc(100% - 71px);
+	}
+}
+
+/* #region znc */
+#chat .msg[data-from*="*"] .from {
+	display: none;
+}
+
+/* TODO: Make text monospace */
+
+/* #endregion */
+
+/* #endregion */
+
+#chat-container[data-current-channel="#youth-logs"] #chat .msg[data-type="message"] .from { width: 100px; }
+#chat-container[data-current-channel="#youth-logs"] #chat .msg .content { width: auto; }
+#chat-container[data-current-channel="#youth-logs"] #chat .previous-source .from { display: block; }
+
+#chat-container[data-current-channel="#youth-logs"] #chat .msg .time {
+	order: 0;
+	padding: 0;
+}
+
+#chat-container[data-current-channel="#youth-logs"] #chat .chat-view[data-type=channel] .msg,
+#chat-container[data-current-channel="#youth-logs"] #chat .chat-view[data-type=channel] .msg.highlight {
+	border-left: none;
+}
+
+#chat-container[data-current-channel="#youth-logs"] #chat .msg {
+	flex-wrap: unset;
+}
