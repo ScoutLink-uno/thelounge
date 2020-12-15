@@ -126,7 +126,7 @@ function Client(manager, name, config = {}) {
 
 		// Networks are created instantly, but to reduce server load on startup
 		// We randomize the IRC connections and channel log loading
-		let delay = manager.clients.length * 500;
+		let delay = manager.clients.length * 5000;
 		client.networks.forEach((network) => {
 			setTimeout(() => {
 				network.channels.forEach((channel) => channel.loadMessages(client, network));
@@ -136,7 +136,7 @@ function Client(manager, name, config = {}) {
 				}
 			}, delay);
 
-			delay += 1000 + Math.floor(Math.random() * 1000);
+			delay += 10000 + Math.floor(Math.random() * 10000);
 		});
 
 		client.fileHash = manager.getDataToSave(client).newHash;
