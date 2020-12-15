@@ -44,19 +44,10 @@
 			<span v-if="message.type === 'message'" class="from">
 				<template v-if="message.from && message.from.nick">
 					<span class="only-copy">&lt;</span>
-					<Username :user="message.from" :network="network" :channel="channel" />
+					<strong
+						><Username :user="message.from" :network="network" :channel="channel"
+					/></strong>
 					<span class="only-copy">&gt; </span>
-					<template v-if="message.from.mode !== ''">
-						<span class="mode-badge">
-							<template v-if="message.from.mode === '!'"> Oper </template>
-							<template v-if="message.from.mode === '~'"> Owner </template>
-							<template v-if="message.from.mode === '&'"> Administrator </template>
-							<template v-if="message.from.mode === '@'"> Operator </template>
-							<template v-if="message.from.mode === '%'"> Half-Operator </template>
-							<template v-if="message.from.mode === '+'"> Voiced </template>
-							<template v-if="message.from.mode === '-'"> Half-Voiced </template>
-						</span>
-					</template>
 				</template>
 			</span>
 			<span v-else-if="message.type === 'plugin'" class="from">
@@ -73,7 +64,18 @@
 					<span class="only-copy">- </span>
 				</template>
 			</span>
-			<span class="content" dir="auto">
+			<template v-if="message.from.mode !== ''">
+				<span class="mode-badge">
+					<template v-if="message.from.mode === '!'"> Oper </template>
+					<template v-if="message.from.mode === '~'"> Owner </template>
+					<template v-if="message.from.mode === '&'"> Administrator </template>
+					<template v-if="message.from.mode === '@'"> Operator </template>
+					<template v-if="message.from.mode === '%'"> Half-Operator </template>
+					<template v-if="message.from.mode === '+'"> Voiced </template>
+					<template v-if="message.from.mode === '-'"> Half-Voiced </template>
+				</span>
+			</template>
+			<div class="content" dir="auto">
 				<span
 					v-if="message.showInActive"
 					aria-label="This message was shown in your active channel"
@@ -94,7 +96,7 @@
 					:link="preview"
 					:channel="channel"
 				/>
-			</span>
+			</div>
 		</template>
 	</div>
 </template>

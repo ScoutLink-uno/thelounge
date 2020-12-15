@@ -336,49 +336,92 @@ Made by Yorick
 
 /* Conversation layout */
 
+/* Time */
+#chat .msg .from,
+#chat .msg .time {
+	width: auto;
+}
+
+#chat .time {
+	color: var(--body-color-muted) !important;
+}
+
+#chat .msg[data-type="message"] .time {
+	order: 1;
+	width: auto;
+	margin: auto 0;
+	padding: 0 4px;
+}
+
+#chat .msg[data-type="message"] .mode-badge {
+	order: 2;
+	display: inline-block;
+	margin: 0;
+}
+
+#chat .msg[data-type="message"] .content {
+	order: 3;
+	display: block;
+	width: 100%;
+	padding: 0 10px;
+}
+
+#chat .msg[data-type="message"] .show-seconds .time,
+#chat .msg[data-type="message"] .time {
+	font-size: 0.75em;
+	margin: 10 auto;
+	padding-right: 10px;
+	padding-left: 0;
+}
+
+#chat .msg[data-type="message"] .from {
+	font-size: 0.85em;
+	line-height: normal;
+	padding-left: 10px;
+	width: auto;
+}
+
+#chat .msg[data-type="message"] .from .mode {
+	display: none;
+}
+
 /* Make msg flex for messages type */
 #chat .msg[data-type="message"] {
 	display: flex;
 	flex-wrap: wrap;
-}
-
-/* Make time show at the end of the message and Make the time size a bit smaller to it gets pushes closer to the userlist and Remove padding from time */
-#chat .msg .time {
-	order: 3;
-	display: block;
-	width: 55px;
-	padding: 3px;
-}
-
-/* Make "From" resize by the size instead of a fixed size */
-#chat .from {
-	width: auto;
-	padding-left: 5px;
-	padding-right: 5px;
-	mask-image: none;
+	padding-top: 5px;
 }
 
 /* Hide chat border between sender and text */
+#chat .self .content,
 #chat .content {
 	border-left: none;
 	padding-left: 6px;
+	color: var(--body-color);
 }
 
-/* Make space for the time and  Use same format for own messages */
-#chat .msg .content {
-	width: calc(100% - 70px);
-	color: var(--message-text);
+#chat .msg[data-type="join"] .time,
+#chat .msg[data-type="part"] .time,
+#chat .msg[data-type="quit"] .time,
+#chat .msg[data-type="topic_set_by"] .time,
+#chat .msg[data-type="topic"] .time,
+#chat .msg[data-type="mode"] .time,
+#chat .msg[data-type="notice"] .time,
+#chat .msg[data-type="action"] .time {
+	order: 3;
+	padding-right: 5px;
 }
 
 /* Hide chat sender if the sender was also the sender of the message directly above */
-#chat .previous-source .from {
-	display: none;
+#chat .msg[data-type="message"] .previous-source .mode-badge,
+#chat .previous-source .from,
+#chat .previous-source .time,
+#chat .previous-source .mode-badge {
+	display: none !important;
 }
 
-/* For normal chat messages make from 100% with so the message and time jump to the new line */
-#chat .msg[data-type="message"] .from {
-	width: 100%;
-	text-align: unset;
+#chat .msg[data-type="message"].previous-source {
+	padding-top: 0 !important;
 }
 
 /* Make messages be closer together, especially nice if it's the same sender */
@@ -394,22 +437,12 @@ Made by Yorick
 	display: none;
 }
 
-/* Show mode badge */
-#chat .mode-badge {
-	display: inline-block;
-}
-
 /* Colour message on select/hold */
 #chat .msg:active {
 	background-color: var(--message-hover);
 }
 
 /* Notice formatting */
-
-/* Time */
-#chat .msg[data-type="notice"] .time {
-	color: var(--notice-time);
-}
 
 /* Message */
 #chat .msg[data-type="notice"] .content {
@@ -594,29 +627,6 @@ input::placeholder {
 @media (min-width: 480px) {
 	#chat .from {
 		padding-left: none;
-	}
-
-	#chat .msg .time {
-		width: 60px;
-		display: block;
-	}
-
-	/* Make space for the time */
-	#chat .msg .content {
-		width: calc(100% - 71px);
-	}
-}
-
-/* fix Time on mobile */
-@media (max-width: 479px) {
-	#chat .msg .time {
-		width: 60px;
-		display: block;
-	}
-
-	/* Make space for the time */
-	#chat .msg .content {
-		width: calc(100% - 71px);
 	}
 }
 
