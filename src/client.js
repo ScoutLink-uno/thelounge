@@ -419,7 +419,8 @@ Client.prototype.inputLine = function (data) {
 			this,
 			new Msg({
 				type: Msg.Type.ERROR,
-				text: "You are not connected to the IRC network, unable to send your command.",
+				text:
+					"You are not connected to the IRC network, unable to send your command. Type /connect to connect",
 			})
 		);
 	}
