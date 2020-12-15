@@ -63,7 +63,7 @@ Made by Yorick
 
 	/* mentions */
 	--message-mention: var(--fourth-color);
-	--time-mention: var(--white);
+	--time-mention: var(--c-2);
 
 	/* Notice */
 	--notice-time: var(--c-2);
