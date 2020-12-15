@@ -136,7 +136,7 @@ function Client(manager, name, config = {}) {
 				}
 			}, delay);
 
-			delay += 10000 + Math.floor(Math.random() * 10000);
+			delay += 1000 + Math.floor(Math.random() * 5000);
 		});
 
 		client.fileHash = manager.getDataToSave(client).newHash;
