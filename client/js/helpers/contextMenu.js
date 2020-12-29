@@ -162,71 +162,73 @@ export function generateChannelContextMenu($root, channel, network) {
 			}
 		);
 
-		if (currentChannelUser.modes.includes("@") || store.state.settings.ircop) {
-			items.push(
-				{
-					label: "Give all users voice",
-					type: "item",
-					class: "action-mode-mass-voice",
-					action() {
-						let userlist = "";
-						channel.users.forEach(function (user) {
-							if (user.nick !== "ChanServ") {
-								userlist = userlist + user.nick + " ";
-							}
-						});
-						socket.emit("input", {
-							target: channel.id,
-							text: "/voice " + userlist,
-						});
+		if (currentChannelUser.modes !== undefined) {
+			if (currentChannelUser.modes.includes("@") || store.state.settings.ircop) {
+				items.push(
+					{
+						label: "Give all users voice",
+						type: "item",
+						class: "action-mode-mass-voice",
+						action() {
+							let userlist = "";
+							channel.users.forEach(function (user) {
+								if (user.nick !== "ChanServ") {
+									userlist = userlist + user.nick + " ";
+								}
+							});
+							socket.emit("input", {
+								target: channel.id,
+								text: "/voice " + userlist,
+							});
+						},
 					},
-				},
-				{
-					label: "Take all users voice",
-					type: "item",
-					class: "action-mode-mass-devoice",
-					action() {
-						let userlist = "";
-						channel.users.forEach(function (user) {
-							if (user.nick !== "ChanServ") {
-								userlist = userlist + user.nick + " ";
-							}
-						});
-						socket.emit("input", {
-							target: channel.id,
-							text: "/devoice " + userlist,
-						});
+					{
+						label: "Take all users voice",
+						type: "item",
+						class: "action-mode-mass-devoice",
+						action() {
+							let userlist = "";
+							channel.users.forEach(function (user) {
+								if (user.nick !== "ChanServ") {
+									userlist = userlist + user.nick + " ";
+								}
+							});
+							socket.emit("input", {
+								target: channel.id,
+								text: "/devoice " + userlist,
+							});
+						},
 					},
-				},
-				{
-					type: "divider",
-				},
-				{
-					label: "Moderate Chat",
-					type: "item",
-					class: "action-mode-set-m",
-					action() {
-						socket.emit("input", {
-							target: channel.id,
-							text: "/mode +m",
-						});
+					{
+						type: "divider",
 					},
-				},
-				{
-					label: "Unmoderate Chat",
-					type: "item",
-					class: "action-mode-unset-m",
-					action() {
-						socket.emit("input", {
-							target: channel.id,
-							text: "/mode -m",
-						});
+					{
+						label: "Moderate Chat",
+						type: "item",
+						class: "action-mode-set-m",
+						action() {
+							socket.emit("input", {
+								target: channel.id,
+								text: "/mode +m",
+							});
+						},
 					},
-				},
-				{
-					type: "divider",
-				}
-			);
+					{
+						label: "Unmoderate Chat",
+						type: "item",
+						class: "action-mode-unset-m",
+						action() {
+							socket.emit("input", {
+								target: channel.id,
+								text: "/mode -m",
+							});
+						},
+					},
+					{
+						type: "divider",
+					}
+				);
+			}
 		}
 	}
 
