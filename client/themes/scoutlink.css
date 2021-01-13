@@ -1,0 +1,101 @@
+body {
+	margin: 0;
+	background-color: #1D1756;
+}
+
+.signed-out #main {
+	left: 5px;
+}
+
+#sidebar {
+	width: 180px;
+	background-color: #1D1756;
+}
+
+#sidebar .chan .name::after {
+	background: none;
+}
+
+#sidebar .chan:first-child, #sidebar .chan:first-child:hover, #sidebar .chan:first-child.active {
+	color: #ECAC00;
+}
+
+#connect img {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 30%;
+}
+
+#connect h1.title {
+	text-align: center;
+}
+
+#footer {
+	border-radius: 2px;
+	bottom: 4px;
+	left: 5px;
+	width: 180px;
+	background-color: #1D1756;
+}
+
+/* Sidebar hide connect button */
+#sidebar #footer .connect {
+	display: none;
+}
+
+/* Sidebar active (Current channel and footer buttons */
+#footer button.active, .channel-list-item.active {
+	background-color: rgb(19, 13, 70);
+}
+
+/* Sidebar hover (Current channel and footer buttons */
+#footer button:hover, .channel-list-item:hover {
+	background-color: rgb(27, 21, 78);
+}
+
+/* Logo */
+#sidebar .logo-container img {
+	width: 80%;
+	height: 80%;
+	margin: 18px;
+}
+
+#main {
+	bottom: 4px;
+	right: 5px;
+	top: 4px;
+}
+
+#chat .unhandled .from {
+	color: #ddd;
+}
+
+#windows .window::before {
+	background: #f4f4f4;
+	background-image: linear-gradient(#f4f4f4, #ececec);
+	border-bottom: 1px solid #d7d7d7;
+	content: " ";
+	display: block;
+	height: 10px;
+	position: relative;
+	z-index: 10;
+}
+
+#windows .window {
+	border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+	#sidebar {
+		left: -220px;
+	}
+
+	#footer {
+		left: -215px;
+	}
+
+	#main {
+		left: 5px;
+	}
+}
