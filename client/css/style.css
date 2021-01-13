@@ -1452,7 +1452,7 @@ textarea.input {
 /* Nicknames */
 
 #chat .user {
-	color: #50a656;
+	font-weight: normal;
 }
 
 .colored-nicks .user.color-1 { color: #107ead; }
