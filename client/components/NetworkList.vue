@@ -1,6 +1,17 @@
 <template>
 	<div v-if="$store.state.networks.length === 0" class="empty">
-		You are not connected to any networks yet.
+		<div class="not-connected-message">
+			You are currently not connected to ScoutLink.
+			<div class="connect-button">
+				<router-link
+					v-if="$route.name !== 'Connect'"
+					:to="'/connect'"
+					:class="['not_connected_text']"
+					active-class="active"
+					>Click here to connect.</router-link
+				>
+			</div>
+		</div>
 	</div>
 	<div v-else ref="networklist">
 		<div class="jump-to-input">

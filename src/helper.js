@@ -244,7 +244,7 @@ function passwordCompare(password, expected) {
 
 function getDefaultNick() {
 	if (!this.config.defaults.nick) {
-		return "thelounge";
+		return "";
 	}
 
 	return this.config.defaults.nick.replace(/%/g, () => Math.floor(Math.random() * 10));

@@ -716,6 +716,21 @@ p {
 	display: none;
 }
 
+/* Sidebar not connected area */
+
+#sidebar .empty {
+	color: #b7c5d1;
+	margin: 5px 10px;
+	padding: 0;
+	flex-grow: 1;
+	line-height: 1.6;
+	text-align: center;
+}
+
+#sidebar .empty a {
+	color: #b7c5d1;
+}
+
 .channel-list-item,
 #sidebar .empty {
 	font-size: 14px;
@@ -776,13 +791,6 @@ background on hover (unless active) */
 	position: relative;
 	margin-bottom: 20px;
 	touch-action: pan-y;
-}
-
-#sidebar .empty {
-	flex-grow: 1;
-	line-height: 1.6;
-	padding: 40px 20px;
-	text-align: center;
 }
 
 .channel-list-item[data-type="lobby"] {
